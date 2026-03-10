@@ -1,0 +1,56 @@
+services:
+
+  # ── GeoServer ────────────────────────────────────────────────────────────
+  geoserver:
+    image: kartoza/geoserver:2.25.0
+    container_name: geoserver
+    restart: unless-stopped
+    environment:
+      - GEOSERVER_DATA_DIR=/opt/geoserver/data_dir
+      - GEOSERVER_ADMIN_USER=admin
+      - GEOSERVER_ADMIN_PASSWORD=${GEOSERVER_ADMIN_PASSWORD}
+      - INITIAL_MEMORY=512M
+      - MAXIMUM_MEMORY=1024M
+      - GEOSERVER_PORT=8090
+    volumes:
+      - ./geoserver/data:/opt/geoserver/data_dir
+    networks:
+      - park-network
+    # NOT exposed to the host — only accessible inside the Docker network
+    # Nginx proxies public requests to it
+    expose:
+      - "8090"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8090/geoserver/web/"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # ── Nginx ─────────────────────────────────────────────────────────────────
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./map:/var/www/html/park          # Leaflet map files
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      # SSL cert — issued by certbot on the host server
+      - /etc/letsencrypt/live/map.bucegipark.ro/fullchain.pem:/etc/nginx/ssl/map.bucegipark.ro.crt:ro
+      - /etc/letsencrypt/live/map.bucegipark.ro/privkey.pem:/etc/nginx/ssl/map.bucegipark.ro.key:ro
+    networks:
+      - park-network
+    depends_on:
+      geoserver:
+        condition: service_healthy
+
+# ── Shared network ───────────────────────────────────────────────────────────
+# Both containers talk to each other by service name (e.g. http://geoserver:8080)
+networks:
+  park-network:
+    driver: bridge

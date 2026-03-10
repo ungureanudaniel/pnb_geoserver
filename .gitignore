@@ -1,0 +1,16 @@
+# Environment secrets — never commit these
+.env
+
+# GeoServer data directory — large files, managed on server
+geoserver/data/
+
+# SSL certificates — private key must never be committed
+nginx/ssl/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.swp
