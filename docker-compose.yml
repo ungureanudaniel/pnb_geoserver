@@ -15,8 +15,6 @@ services:
       - ./geoserver/data:/opt/geoserver/data_dir
     networks:
       - park-network
-    # NOT exposed to the host — only accessible inside the Docker network
-    # Nginx proxies public requests to it
     expose:
       - "8090"
     healthcheck:
@@ -48,7 +46,6 @@ services:
         condition: service_healthy
 
 # ── Shared network ───────────────────────────────────────────────────────────
-# Both containers talk to each other by service name (e.g. http://geoserver:8080)
 networks:
   park-network:
     driver: bridge
