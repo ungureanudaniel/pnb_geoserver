@@ -11,7 +11,6 @@ services:
       - GEOSERVER_ADMIN_PASSWORD=${GEOSERVER_ADMIN_PASSWORD}
       - INITIAL_MEMORY=512M
       - MAXIMUM_MEMORY=1024M
-      - GEOSERVER_PORT=8090
     volumes:
       - ./geoserver/data:/opt/geoserver/data_dir
     networks:
@@ -21,7 +20,7 @@ services:
     expose:
       - "8090"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8090/geoserver/web/"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/geoserver/web/"]
       interval: 30s
       timeout: 10s
       retries: 5
