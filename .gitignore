@@ -14,3 +14,9 @@ Thumbs.db
 # Editor
 .vscode/
 *.swp
+
+# development yml
+docker-compose.dev.yml
+
+# development nginx
+nginx/nginx.dev.conf

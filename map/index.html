@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ro">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Natural Park Explorer</title>
+  <title>Parcul Natural Bucegi — Hartă Interactivă</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
@@ -14,8 +14,6 @@
       --fern:         #6b9e78;
       --sage:         #a8c5a0;
       --mist:         #e8f0e4;
-      --bark:         #8b6f47;
-      --earth:        #c4a882;
       --stone:        #9eada8;
       --water:        #4a8fa8;
       --gold:         #d4a843;
@@ -25,9 +23,7 @@
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body { font-family: 'DM Sans', sans-serif; background: var(--forest); overflow: hidden; }
-
     #map { width: 100vw; height: 100vh; }
 
     /* ── Header ── */
@@ -38,44 +34,38 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 24px;
+      padding: 12px 20px;
       background: linear-gradient(180deg, rgba(10,25,15,0.95) 0%, rgba(10,25,15,0) 100%);
       pointer-events: none;
     }
 
-    #header-title { display: flex; align-items: baseline; gap: 10px; }
+    #header-title { display: flex; align-items: center; gap: 12px; }
+    #header-title img { width: 48px; height: 40px; filter: drop-shadow(0 0 4px rgba(74,124,89,0.8)); }
+    #header-text { display: flex; flex-direction: column; }
 
-    #header-title h1 {
+    #header-text h1 {
       font-family: 'Playfair Display', serif;
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       color: var(--cream);
-      letter-spacing: 0.04em;
-      line-height: 1;
+      letter-spacing: 0.03em;
+      line-height: 1.1;
     }
 
-    #header-title span {
-      font-size: 0.7rem;
+    #header-text span {
+      font-size: 0.65rem;
       font-weight: 500;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--fern);
     }
 
-    #header-status {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.72rem;
-      color: var(--sage);
-      font-weight: 300;
-      letter-spacing: 0.05em;
-    }
+    #header-right { display: flex; align-items: center; gap: 14px; pointer-events: all; }
+
+    #header-status { display: flex; align-items: center; gap: 7px; font-size: 0.7rem; color: var(--sage); font-weight: 300; }
 
     .status-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: #5ecf7a;
-      box-shadow: 0 0 8px #5ecf7a;
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #5ecf7a; box-shadow: 0 0 8px #5ecf7a;
       animation: pulse 2.5s ease-in-out infinite;
     }
 
@@ -84,15 +74,42 @@
       50%       { opacity: 0.5; transform: scale(0.85); }
     }
 
-    /* ── Dashboard panel ── */
+    /* ── Language toggle ── */
+    #lang-toggle {
+      display: flex;
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 20px;
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
+
+    .lang-btn {
+      padding: 5px 12px;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--stone);
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      background: none;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .lang-btn.active { background: rgba(107, 158, 120, 0.3); color: var(--cream); }
+    .lang-btn:hover:not(.active) { color: var(--sage); }
+
+    /* ── Dashboard ── */
     #dashboard {
       position: absolute;
-      top: 72px; left: 20px;
+      top: 68px; left: 20px;
       z-index: 1000;
-      width: 240px;
+      width: 300px;
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
       border-radius: 12px;
+      max-height: calc(100vh - 120px);
       overflow: hidden;
       backdrop-filter: blur(12px);
       animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -104,76 +121,33 @@
     }
 
     #dashboard-header {
-      padding: 14px 16px 10px;
+      padding: 12px 16px 8px;
       border-bottom: 1px solid var(--panel-border);
       background: rgba(45, 90, 61, 0.2);
     }
 
-    #dashboard-header .park-name {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.05rem;
-      color: var(--cream);
-      font-style: italic;
-    }
+    #dashboard-header .park-name { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--cream); font-style: italic; }
+    #dashboard-header .park-subtitle { font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--fern); margin-top: 2px; }
 
-    #dashboard-header .park-subtitle {
-      font-size: 0.65rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--fern);
-      margin-top: 2px;
-    }
+    .kpi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--panel-border); border-bottom: 1px solid var(--panel-border); }
 
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1px;
-      background: var(--panel-border);
-      border-bottom: 1px solid var(--panel-border);
-    }
-
-    .kpi-cell {
-      background: rgba(15, 30, 20, 0.9);
-      padding: 12px 14px;
-      transition: background 0.2s;
-    }
-
+    .kpi-cell { background: rgba(15, 30, 20, 0.9); padding: 10px 14px; transition: background 0.2s; }
     .kpi-cell:hover { background: rgba(45, 90, 61, 0.3); }
 
-    .kpi-value {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.4rem;
-      color: var(--cream);
-      line-height: 1;
-    }
+    .kpi-value { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--cream); line-height: 1; }
+    .kpi-value span { font-size: 0.7rem; color: var(--fern); font-family: 'DM Sans', sans-serif; }
+    .kpi-label { font-size: 0.59rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); margin-top: 3px; }
+    .kpi-trend { font-size: 0.59rem; color: #5ecf7a; margin-top: 2px; }
 
-    .kpi-value span { font-size: 0.75rem; color: var(--fern); font-family: 'DM Sans', sans-serif; }
-
-    .kpi-label {
-      font-size: 0.62rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--stone);
-      margin-top: 4px;
-    }
-
-    .kpi-trend { font-size: 0.62rem; color: #5ecf7a; margin-top: 2px; }
-
-    #dashboard-info { padding: 12px 16px; }
-
-    #dashboard-info p {
-      font-size: 0.72rem;
-      color: var(--sage);
-      line-height: 1.6;
-      font-weight: 300;
-    }
+    #dashboard-info { padding: 10px 16px; }
+    #dashboard-info p { font-size: 0.7rem; color: var(--sage); line-height: 1.6; font-weight: 300; }
 
     /* ── Layer panel ── */
     #layer-panel {
       position: absolute;
       bottom: 40px; right: 20px;
       z-index: 1000;
-      width: 210px;
+      width: 225px;
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
       border-radius: 12px;
@@ -188,65 +162,59 @@
     }
 
     #layer-panel-header {
-      padding: 11px 14px;
+      padding: 10px 14px;
       border-bottom: 1px solid var(--panel-border);
-      font-size: 0.65rem;
+      font-size: 0.63rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--fern);
       background: rgba(45, 90, 61, 0.2);
-      display: flex;
-      align-items: center;
-      gap: 7px;
+      display: flex; align-items: center; gap: 7px;
+    }
+
+    .layer-group {
+      padding: 6px 14px 3px;
+      font-size: 0.57rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--moss);
+      background: rgba(45, 90, 61, 0.1);
+      border-bottom: 1px solid rgba(107, 158, 120, 0.06);
     }
 
     .layer-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 9px 14px;
+      display: flex; align-items: center; gap: 9px;
+      padding: 8px 14px;
       cursor: pointer;
       transition: background 0.15s;
-      border-bottom: 1px solid rgba(107, 158, 120, 0.08);
+      border-bottom: 1px solid rgba(107, 158, 120, 0.07);
     }
 
     .layer-item:last-child { border-bottom: none; }
     .layer-item:hover { background: rgba(45, 90, 61, 0.25); }
 
     .layer-toggle {
-      width: 16px; height: 16px;
-      border-radius: 4px;
+      width: 15px; height: 15px; border-radius: 3px;
       border: 1.5px solid var(--panel-border);
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
       transition: all 0.15s;
     }
 
-    .layer-item.active .layer-toggle {
-      border-color: var(--fern);
-      background: rgba(107, 158, 120, 0.3);
-    }
+    .layer-item.active .layer-toggle { border-color: var(--fern); background: rgba(107, 158, 120, 0.3); }
 
     .layer-item.active .layer-toggle::after {
       content: '';
-      width: 8px; height: 5px;
+      width: 7px; height: 4px;
       border-left: 2px solid var(--fern);
       border-bottom: 2px solid var(--fern);
       transform: rotate(-45deg) translate(1px, -1px);
     }
 
-    .layer-swatch { width: 20px; height: 4px; border-radius: 2px; flex-shrink: 0; }
-    .layer-label { font-size: 0.74rem; color: var(--mist); font-weight: 400; flex: 1; }
+    .layer-swatch { width: 18px; height: 4px; border-radius: 2px; flex-shrink: 0; }
+    .layer-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin: 0 4px; }
+    .layer-label { font-size: 0.71rem; color: var(--mist); font-weight: 400; flex: 1; }
 
-    .layer-loading {
-      font-size: 0.6rem;
-      color: var(--gold);
-      margin-left: auto;
-      animation: blink 1s infinite;
-    }
-
+    .layer-loading { font-size: 0.58rem; color: var(--gold); margin-left: auto; animation: blink 1s infinite; }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
     /* ── Legend ── */
@@ -254,9 +222,10 @@
       position: absolute;
       bottom: 40px; left: 20px;
       z-index: 1000;
-      width: 190px;
+      width: 195px;
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
+      max-height: calc(100vh - 200px);
       border-radius: 12px;
       overflow: hidden;
       backdrop-filter: blur(12px);
@@ -264,76 +233,41 @@
     }
 
     #legend-header {
-      padding: 11px 14px;
+      padding: 10px 14px;
       border-bottom: 1px solid var(--panel-border);
-      font-size: 0.65rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--fern);
-      background: rgba(45, 90, 61, 0.2);
+      font-size: 0.63rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--fern); background: rgba(45, 90, 61, 0.2);
     }
 
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 14px;
-      border-bottom: 1px solid rgba(107, 158, 120, 0.08);
-    }
-
+    .legend-item { display: flex; align-items: center; gap: 9px; padding: 7px 14px; border-bottom: 1px solid rgba(107, 158, 120, 0.07); }
     .legend-item:last-child { border-bottom: none; }
 
-    .legend-icon {
-      width: 22px; height: 22px;
-      border-radius: 4px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.85rem;
-    }
+    .legend-icon { width: 20px; height: 20px; border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+    .legend-line { width: 20px; height: 3px; border-radius: 2px; flex-shrink: 0; }
+    .legend-dash { width: 20px; height: 0; border-top: 3px dashed; flex-shrink: 0; }
+    .legend-dot  { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin: 0 5px; }
+    .legend-box  { width: 20px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+    .legend-label { font-size: 0.68rem; color: var(--sage); font-weight: 300; }
 
-    .legend-line { width: 22px; height: 3px; border-radius: 2px; flex-shrink: 0; }
-
-    .legend-dash { width: 22px; height: 0; border-top: 3px dashed; flex-shrink: 0; }
-
-    .legend-label { font-size: 0.71rem; color: var(--sage); font-weight: 300; }
-
-    /* ── Coordinates bar ── */
+    /* ── Coords ── */
     #coords-bar {
-      position: absolute;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
+      position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
       z-index: 1000;
-      background: var(--panel-bg);
-      border: 1px solid var(--panel-border);
-      border-radius: 20px;
-      padding: 5px 16px;
-      font-size: 0.65rem;
-      color: var(--stone);
-      letter-spacing: 0.08em;
-      backdrop-filter: blur(8px);
-      pointer-events: none;
+      background: var(--panel-bg); border: 1px solid var(--panel-border);
+      border-radius: 20px; padding: 4px 14px;
+      font-size: 0.63rem; color: var(--stone); letter-spacing: 0.08em;
+      backdrop-filter: blur(8px); pointer-events: none; white-space: nowrap;
     }
 
     /* ── Error toast ── */
     #error-toast {
-      position: absolute;
-      top: 72px; right: 20px;
-      z-index: 2000;
-      background: rgba(60, 20, 10, 0.92);
-      border: 1px solid rgba(232, 115, 74, 0.4);
-      border-radius: 8px;
-      padding: 10px 16px;
-      font-size: 0.72rem;
-      color: #f0a080;
-      max-width: 260px;
-      display: none;
-      backdrop-filter: blur(8px);
+      position: absolute; top: 72px; right: 20px; z-index: 2000;
+      background: rgba(60, 20, 10, 0.92); border: 1px solid rgba(232, 115, 74, 0.4);
+      border-radius: 8px; padding: 10px 16px; font-size: 0.72rem; color: #f0a080;
+      max-width: 260px; display: none; backdrop-filter: blur(8px);
     }
 
-    /* ── Popup ── */
+    /* ── Popups ── */
     .leaflet-popup-content-wrapper {
       background: rgba(15, 30, 20, 0.95) !important;
       border: 1px solid var(--panel-border) !important;
@@ -345,100 +279,42 @@
     }
 
     .leaflet-popup-tip { background: rgba(15, 30, 20, 0.95) !important; }
-
     .leaflet-popup-content { margin: 12px 16px !important; font-size: 0.78rem !important; line-height: 1.6 !important; }
 
-    .popup-title { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--cream); margin-bottom: 6px; }
+    .popup-title { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--cream); margin-bottom: 5px; }
 
     .popup-tag {
-      display: inline-block;
-      font-size: 0.6rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--fern);
-      background: rgba(107, 158, 120, 0.15);
-      border: 1px solid rgba(107, 158, 120, 0.3);
-      border-radius: 3px;
-      padding: 2px 7px;
-      margin-bottom: 8px;
+      display: inline-block; font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--fern); background: rgba(107, 158, 120, 0.15);
+      border: 1px solid rgba(107, 158, 120, 0.3); border-radius: 3px;
+      padding: 2px 7px; margin-bottom: 8px;
     }
 
-    .popup-row {
-      display: flex;
-      justify-content: space-between;
-      color: var(--stone);
-      font-size: 0.7rem;
-      padding: 3px 0;
-      border-bottom: 1px solid rgba(107, 158, 120, 0.1);
-    }
-
+    .popup-row { display: flex; justify-content: space-between; color: var(--stone); font-size: 0.7rem; padding: 3px 0; border-bottom: 1px solid rgba(107, 158, 120, 0.1); }
     .popup-row:last-child { border-bottom: none; }
     .popup-row strong { color: var(--mist); }
 
     /* ── Leaflet overrides ── */
-    .leaflet-control-zoom {
-      border: 1px solid var(--panel-border) !important;
-      border-radius: 8px !important;
-      overflow: hidden;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.3) !important;
-    }
-
-    .leaflet-control-zoom a {
-      background: var(--panel-bg) !important;
-      color: var(--fern) !important;
-      border-bottom: 1px solid var(--panel-border) !important;
-      backdrop-filter: blur(8px);
-      font-size: 1rem !important;
-      line-height: 26px !important;
-      width: 28px !important;
-      height: 28px !important;
-    }
-
+    .leaflet-control-zoom { border: 1px solid var(--panel-border) !important; border-radius: 8px !important; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.3) !important; }
+    .leaflet-control-zoom a { background: var(--panel-bg) !important; color: var(--fern) !important; border-bottom: 1px solid var(--panel-border) !important; backdrop-filter: blur(8px); font-size: 1rem !important; line-height: 26px !important; width: 28px !important; height: 28px !important; }
     .leaflet-control-zoom a:hover { background: rgba(45, 90, 61, 0.5) !important; color: var(--cream) !important; }
-
-    .leaflet-control-attribution {
-      background: rgba(10, 20, 14, 0.7) !important;
-      color: var(--stone) !important;
-      font-size: 0.6rem !important;
-      backdrop-filter: blur(4px);
-      border-radius: 4px 0 0 0 !important;
-    }
-
+    .leaflet-control-attribution { background: rgba(10, 20, 14, 0.7) !important; color: var(--stone) !important; font-size: 0.6rem !important; backdrop-filter: blur(4px); border-radius: 4px 0 0 0 !important; }
     .leaflet-control-attribution a { color: var(--fern) !important; }
 
-    /* ── Loading overlay ── */
+    /* ── Loading ── */
     #loading {
-      position: absolute;
-      inset: 0;
-      z-index: 9999;
-      background: var(--forest);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      transition: opacity 0.8s ease;
+      position: absolute; inset: 0; z-index: 9999; background: var(--forest);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 16px; transition: opacity 0.8s ease;
     }
 
     #loading.hidden { opacity: 0; pointer-events: none; }
-
     .loading-icon { font-size: 2.5rem; animation: sway 2s ease-in-out infinite; }
 
-    @keyframes sway {
-      0%, 100% { transform: rotate(-5deg); }
-      50%       { transform: rotate(5deg); }
-    }
+    @keyframes sway { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
 
-    .loading-text {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.1rem;
-      color: var(--sage);
-      font-style: italic;
-      letter-spacing: 0.05em;
-    }
-
+    .loading-text { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--sage); font-style: italic; letter-spacing: 0.05em; }
     .loading-bar { width: 120px; height: 2px; background: rgba(107, 158, 120, 0.2); border-radius: 1px; overflow: hidden; }
-
     .loading-bar-fill { height: 100%; background: var(--fern); border-radius: 1px; animation: load 1.5s ease forwards; }
 
     @keyframes load { from { width: 0; } to { width: 100%; } }
@@ -447,56 +323,73 @@
 <body>
 
 <div id="loading">
-  <div class="loading-icon">🌿</div>
-  <div class="loading-text">Entering the park…</div>
+  <div class="loading-icon"><img src="https://bucegipark.ro/static/img/logo/bucegi_logo.e26de97102fa.png" style="width:100%; height:50%;" alt="Bucegi logo"/></div>
+  <div class="loading-text" id="loading-text">Se încarcă harta Parcului Natural Bucegi…</div>
   <div class="loading-bar"><div class="loading-bar-fill"></div></div>
 </div>
 
 <div id="map"></div>
 
+<!-- Header -->
 <div id="header">
   <div id="header-title">
-    <h1>Greenwood Nature Reserve</h1>     <!-- ← CHANGE park name -->
-    <span>Interactive Explorer</span>
+    <img src="https://bucegipark.ro/static/img/logo/bucegi_logo.e26de97102fa.png" alt="Bucegi logo"/>
+    <div id="header-text">
+      <h1 id="header-h1">Parcul Natural Bucegi</h1>
+      <span id="header-sub">Hartă Interactivă</span>
+    </div>
   </div>
-  <div id="header-status">
-    <div class="status-dot"></div>
-    Park Open · Live data
+  <div id="header-right">
+    <div id="header-status">
+      <div class="status-dot"></div>
+      <span id="status-text">Parc Deschis · Date live</span>
+    </div>
+    <div id="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('ro')">RO</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+    </div>
   </div>
 </div>
 
+<!-- Dashboard -->
 <div id="dashboard">
   <div id="dashboard-header">
-    <div class="park-name">Park Overview</div>
-    <div class="park-subtitle">Live conditions</div>
+    <div class="park-name" id="db-title">Prezentare Parc</div>
+    <div class="park-subtitle" id="db-subtitle">Condiții actuale</div>
   </div>
   <div class="kpi-grid">
     <div class="kpi-cell">
-      <div class="kpi-value">4,820<span> ha</span></div>   <!-- ← CHANGE -->
-      <div class="kpi-label">Total Area</div>
-      <div class="kpi-trend">▲ Protected zone</div>
+      <div class="kpi-value">32,520<span> ha</span></div>
+      <div class="kpi-label" id="kpi-area">Suprafață</div>
+      <div class="kpi-trend">▲ Zonă protejată</div>
     </div>
     <div class="kpi-cell">
-      <div class="kpi-value">127</div>                     <!-- ← CHANGE -->
-      <div class="kpi-label">Bird Species</div>
-      <div class="kpi-trend">▲ 8 new this season</div>
+      <div class="kpi-value">1,200+</div>
+      <div class="kpi-label" id="kpi-species">Specii floră</div>
+      <div class="kpi-trend">▲ 100 endemice</div>
     </div>
     <div class="kpi-cell">
-      <div class="kpi-value">38<span> km</span></div>      <!-- ← CHANGE -->
-      <div class="kpi-label">Trail Network</div>
-      <div class="kpi-trend">● All trails open</div>
+      <div class="kpi-value">150<span> km</span></div>
+      <div class="kpi-label" id="kpi-trails">Trasee marcate</div>
+      <div class="kpi-trend">● Accesibile</div>
     </div>
     <div class="kpi-cell">
-      <div class="kpi-value">12</div>                      <!-- ← CHANGE -->
-      <div class="kpi-label">Viewpoints</div>
-      <div class="kpi-trend">▲ 3 new added</div>
+      <div class="kpi-value">~100</div>
+      <div class="kpi-label" id="kpi-bears">Urși bruni</div>
+      <div class="kpi-trend">▲ Populație stabilă</div>
+    </div>
+    <div class="kpi-cell">
+      <div class="kpi-value">2,505<span> m</span></div>
+      <div class="kpi-label" id="kpi-peak">Altitudine maximă</div>
+      <div class="kpi-trend">▲ Vf. Omu</div>
     </div>
   </div>
   <div id="dashboard-info">
-    <p>Toggle layers to explore trails, viewpoints, flora zones, and park boundaries.</p>
+    <p id="db-info">Activați straturile pentru a explora traseele, zonarea și infrastructura parcului.</p>
   </div>
 </div>
 
+<!-- Layer panel -->
 <div id="layer-panel">
   <div id="layer-panel-header">
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6b9e78" stroke-width="2">
@@ -504,95 +397,321 @@
       <polyline points="2 17 12 22 22 17"/>
       <polyline points="2 12 12 17 22 12"/>
     </svg>
-    Map Layers
+    <span id="layers-title">Straturi hartă</span>
   </div>
-  <!-- data-layer must match a key in the LAYERS config below -->
-  <div class="layer-item active" data-layer="boundary" onclick="toggleLayer(this)">
+
+  <div class="layer-group" id="grp-limits">Limite și zonare</div>
+  <div class="layer-item active" data-layer="park_boundary" onclick="toggleLayer(this)">
     <div class="layer-toggle"></div>
     <div class="layer-swatch" style="background:#e8734a;"></div>
-    <span class="layer-label">Park Boundary</span>
+    <span class="layer-label" data-ro="Limita parcului" data-en="Park Boundary">Limita parcului</span>
   </div>
+  <div class="layer-item active" data-layer="zoning" onclick="toggleLayer(this)">
+    <div class="layer-toggle"></div>
+    <div class="layer-swatch" style="background:#7b9e6b; opacity:0.8;"></div>
+    <span class="layer-label" data-ro="Zonare parc" data-en="Park Zoning">Zonare parc</span>
+  </div>
+  <div class="layer-item" data-layer="ROSCI0013" onclick="toggleLayer(this)">
+    <div class="layer-toggle"></div>
+    <div class="layer-swatch" style="background:#9b59b6; opacity:0.8;"></div>
+    <span class="layer-label" data-ro="Sit Natura 2000" data-en="Natura 2000 Site">Sit Natura 2000</span>
+  </div>
+
+  <div class="layer-group" id="grp-veg">Vegetație</div>
+  <div class="layer-item active" data-layer="forest" onclick="toggleLayer(this)">
+    <div class="layer-toggle"></div>
+    <div class="layer-swatch" style="background:#2d5a3d; opacity:0.9;"></div>
+    <span class="layer-label" data-ro="Acoperire forestieră" data-en="Forest Cover">Acoperire forestieră</span>
+  </div>
+
+  <div class="layer-group" id="grp-trails">Trasee</div>
   <div class="layer-item active" data-layer="trails" onclick="toggleLayer(this)">
     <div class="layer-toggle"></div>
     <div class="layer-swatch" style="background:#d4a843;"></div>
-    <span class="layer-label">Hiking Trails</span>
+    <span class="layer-label" data-ro="Trasee turistice" data-en="Hiking Trails">Trasee turistice</span>
   </div>
-  <div class="layer-item active" data-layer="viewpoints" onclick="toggleLayer(this)">
+  <div class="layer-item active" data-layer="theme_trails" onclick="toggleLayer(this)">
     <div class="layer-toggle"></div>
-    <div class="layer-swatch" style="background:#4a8fa8; border-radius:50%; width:10px; height:10px; margin:0 5px;"></div>
-    <span class="layer-label">Viewpoints</span>
+    <div class="layer-swatch" style="background:#a06bc4;"></div>
+    <span class="layer-label" data-ro="Trasee tematice" data-en="Theme Trails">Trasee tematice</span>
   </div>
-  <div class="layer-item active" data-layer="flora" onclick="toggleLayer(this)">
+
+  <div class="layer-group" id="grp-poi">Puncte de interes</div>
+  <div class="layer-item active" data-layer="peaks" onclick="toggleLayer(this)">
     <div class="layer-toggle"></div>
-    <div class="layer-swatch" style="background:#4a7c59; opacity:0.8;"></div>
-    <span class="layer-label">Flora Zones</span>
+    <div class="layer-dot" style="background:#e8c85a;"></div>
+    <span class="layer-label" data-ro="Vârfuri >2400m" data-en="Peaks >2400m">Vârfuri >2400m</span>
   </div>
-  <div class="layer-item active" data-layer="water" onclick="toggleLayer(this)">
+  <div class="layer-item active" data-layer="shelters" onclick="toggleLayer(this)">
     <div class="layer-toggle"></div>
-    <div class="layer-swatch" style="background:#4a8fa8; opacity:0.8;"></div>
-    <span class="layer-label">Water Bodies</span>
+    <div class="layer-dot" style="background:#e8a84a;"></div>
+    <span class="layer-label" data-ro="Refugii montane" data-en="Mountain Shelters">Refugii montane</span>
   </div>
-  <div class="layer-item" data-layer="facilities" onclick="toggleLayer(this)">
+  <div class="layer-item active" data-layer="cabins" onclick="toggleLayer(this)">
     <div class="layer-toggle"></div>
-    <div class="layer-swatch" style="background:#a8c5a0;"></div>
-    <span class="layer-label">Facilities</span>
+    <div class="layer-dot" style="background:#c4825a;"></div>
+    <span class="layer-label" data-ro="Cabane" data-en="Cabins">Cabane</span>
+  </div>
+  <div class="layer-item active" data-layer="ski" onclick="toggleLayer(this)">
+    <div class="layer-toggle"></div>
+    <div class="layer-dot" style="background:#4a8fa8;"></div>
+    <span class="layer-label" data-ro="Stațiuni schi" data-en="Ski Resorts">Stațiuni schi</span>
+  </div>
+  <div class="layer-item active" data-layer="admin" onclick="toggleLayer(this)">
+    <div class="layer-toggle"></div>
+    <div class="layer-dot" style="background:#a8c5a0;"></div>
+    <span class="layer-label" data-ro="Administrație / Infocentre" data-en="Admin / Info Centers">Administrație / Infocentre</span>
+  </div>
+
+  <div class="layer-group" id="grp-agrement">Infrastructură agrement</div>
+  <div class="layer-item" data-layer="ski_slopes" onclick="toggleLayer(this)">
+    <div class="layer-toggle"></div>
+    <div class="layer-swatch" style="background:#5dade2;"></div>
+    <span class="layer-label" data-ro="Pârtii schi" data-en="Ski Slopes">Pârtii schi</span>
+  </div>
+  <div class="layer-item" data-layer="telecabine" onclick="toggleLayer(this)">
+    <div class="layer-toggle"></div>
+    <div class="layer-swatch" style="background:#e74c3c; height:2px; margin:1px 0;"></div>
+    <span class="layer-label" data-ro="Telecabine / Telegondole" data-en="Cable Cars / Gondolas">Telecabine / Telegondole</span>
+  </div>
+  <div class="layer-item" data-layer="teleschi" onclick="toggleLayer(this)">
+    <div class="layer-toggle"></div>
+    <div class="layer-swatch" style="background:#f39c12; height:2px; margin:1px 0;"></div>
+    <span class="layer-label" data-ro="Teleschi / Telescaune" data-en="Ski Lifts / Chairlifts">Teleschi / Telescaune</span>
   </div>
 </div>
 
+<!-- Legend -->
 <div id="legend">
-  <div id="legend-header">Map Legend</div>
+  <div id="legend-header">Legendă</div>
   <div class="legend-item">
     <div class="legend-dash" style="border-color:#e8734a;"></div>
-    <span class="legend-label">Park Boundary</span>
+    <span class="legend-label" data-ro="Limita parcului" data-en="Park Boundary">Limita parcului</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-dash" style="border-color:#9b59b6;"></div>
+    <span class="legend-label" data-ro="Sit Natura 2000" data-en="Natura 2000 Site">Sit Natura 2000</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background:#e05c5c; opacity:0.7;"></div>
+    <span class="legend-label" data-ro="ZPI — Protecție Integrală" data-en="ZPI — Strict Protection">ZPI — Protecție Integrală</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background:#4a8fa8; opacity:0.7;"></div>
+    <span class="legend-label" data-ro="ZPS — Protecție Specială" data-en="ZPS — Special Protection">ZPS — Protecție Specială</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background:#7db87d; opacity:0.7;"></div>
+    <span class="legend-label" data-ro="ZMD — Management Durabil" data-en="ZMD — Sustainable Mgmt">ZMD — Management Durabil</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background:#f5c842; opacity:0.7;"></div>
+    <span class="legend-label" data-ro="ZDD — Dezvoltare Durabilă" data-en="ZDD — Sustainable Dev">ZDD — Dezvoltare Durabilă</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-line" style="background:#2d5a3d; height:8px; opacity:0.7;"></div>
+    <span class="legend-label" data-ro="Pădure" data-en="Forest">Pădure</span>
   </div>
   <div class="legend-item">
     <div class="legend-line" style="background:#d4a843;"></div>
-    <span class="legend-label">Hiking Trail</span>
+    <span class="legend-label" data-ro="Traseu turistic" data-en="Hiking Trail">Traseu turistic</span>
   </div>
   <div class="legend-item">
-    <div class="legend-icon" style="background:rgba(74,143,168,0.2); color:#4a8fa8;">◉</div>
-    <span class="legend-label">Viewpoint</span>
+    <div class="legend-line" style="background:#a06bc4;"></div>
+    <span class="legend-label" data-ro="Traseu tematic" data-en="Theme Trail">Traseu tematic</span>
   </div>
   <div class="legend-item">
-    <div class="legend-icon" style="background:rgba(74,124,89,0.3); color:#6b9e78;">▪</div>
-    <span class="legend-label">Flora Zone</span>
+    <div class="legend-dot" style="background:#e8c85a;"></div>
+    <span class="legend-label" data-ro="Vârf montan" data-en="Mountain Peak">Vârf montan</span>
   </div>
   <div class="legend-item">
-    <div class="legend-icon" style="background:rgba(74,143,168,0.25); color:#4a8fa8;">〜</div>
-    <span class="legend-label">Water Body</span>
+    <div class="legend-dot" style="background:#e8a84a;"></div>
+    <span class="legend-label" data-ro="Refugiu" data-en="Shelter">Refugiu</span>
   </div>
   <div class="legend-item">
-    <div class="legend-icon" style="background:rgba(168,197,160,0.2); color:#a8c5a0;">⌂</div>
-    <span class="legend-label">Facility / Rest area</span>
+    <div class="legend-dot" style="background:#c4825a;"></div>
+    <span class="legend-label" data-ro="Cabană" data-en="Cabin">Cabană</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:#4a8fa8;"></div>
+    <span class="legend-label" data-ro="Stațiune schi" data-en="Ski Resort">Stațiune schi</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:#a8c5a0;"></div>
+    <span class="legend-label" data-ro="Administrație" data-en="Administration">Administrație</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background:#5dade2; opacity:0.7;"></div>
+    <span class="legend-label" data-ro="Pârtie schi" data-en="Ski Slope">Pârtie schi</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-line" style="background:#e74c3c;"></div>
+    <span class="legend-label" data-ro="Telecabină / Telegondolă" data-en="Cable Car / Gondola">Telecabină / Telegondolă</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-line" style="background:#f39c12;"></div>
+    <span class="legend-label" data-ro="Teleschi / Telescaun" data-en="Ski Lift / Chairlift">Teleschi / Telescaun</span>
   </div>
 </div>
 
-<div id="coords-bar">Hover map to show coordinates</div>
+<div id="coords-bar">Plasați cursorul pe hartă</div>
 <div id="error-toast"></div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 
   // ════════════════════════════════════════════════════════════════════════
-  // CONFIG — edit these to match your GeoServer workspace and layer names
+  // TRANSLATIONS
   // ════════════════════════════════════════════════════════════════════════
 
-  const GEOSERVER_URL = '/geoserver';   // proxied via Nginx — no domain needed
-  const WORKSPACE     = 'park';        // ← your GeoServer workspace name
+  const T = {
+    ro: {
+      loading:     'Se încarcă harta Parcului Natural Bucegi …',
+      headerSub:   'Hartă Interactivă',
+      status:      'Parc Deschis · Date live',
+      dbTitle:     'Prezentare Parc',
+      dbSubtitle:  'Condiții actuale',
+      kpiArea:     'Suprafață',
+      kpiSpecies:  'Specii floră',
+      kpiTrails:   'Trasee marcate',
+      kpiPeak:     'altitudine',
+      kpiBears:    'Urși bruni',
+      dbInfo:      'Activați straturile pentru a explora traseele, zonarea și infrastructura parcului. Gazda unei populații de ~100 urși bruni.',
+      layersTitle: 'Straturi hartă',
+      legendTitle: 'Legendă',
+      grpLimits:   'Limite și zonare',
+      grpVeg:      'Vegetație',
+      grpTrails:   'Trasee',
+      grpPoi:      'Puncte de interes',
+      grpAgrement: 'Infrastructură agrement',
+      coords:      'Plasați cursorul pe hartă',
+      elevation:   'Altitudine maximă',
+      capacity:    'Capacitate',
+      phone:       'Telefon',
+      hours:       'Program',
+      address:     'Adresă',
+      slopes:      'Pârtii',
+      altMin:      'Alt. min',
+      altMax:      'Alt. max',
+      peak:        'Vârf montan',
+      shelter:     'Refugiu montan',
+      cabin:       'Cabană',
+      ski:         'Stațiune schi',
+      admin:       'Administrație',
+      infocenter:  'Infocentru',
+      zpi: 'ZPI — Protecție Integrală',
+      zps: 'ZPS — Protecție Specială',
+      zmd: 'ZMD — Management Durabil',
+      zdd: 'ZDD — Dezvoltare Durabilă',
+    },
+    en: {
+      loading:     'Loading Bucegi Natural Park map…',
+      headerSub:   'Interactive Explorer',
+      status:      'Park Open · Live data',
+      dbTitle:     'Park Overview',
+      dbSubtitle:  'Live conditions',
+      kpiArea:     'Total Area',
+      kpiSpecies:  'Flora Species',
+      kpiTrails:   'Marked Trails',
+      kpiPeak:     'Highest Peak',
+      kpiBears:    'Brown Bears',
+      dbInfo:      'Toggle layers to explore trails, zoning and park infrastructure. Home to ~100 brown bears.',
+      layersTitle: 'Map Layers',
+      legendTitle: 'Legend',
+      grpLimits:   'Limits & Zoning',
+      grpVeg:      'Vegetation',
+      grpTrails:   'Trails',
+      grpPoi:      'Points of Interest',
+      grpAgrement: 'Recreation Infrastructure',
+      coords:      'Hover map to show coordinates',
+      elevation:   'Elevation',
+      capacity:    'Capacity',
+      phone:       'Phone',
+      hours:       'Hours',
+      address:     'Address',
+      slopes:      'Slopes',
+      altMin:      'Min alt',
+      altMax:      'Max alt',
+      peak:        'Mountain Peak',
+      shelter:     'Mountain Shelter',
+      cabin:       'Cabin',
+      ski:         'Ski Resort',
+      admin:       'Administration',
+      infocenter:  'Info Center',
+      zpi: 'ZPI — Strict Protection',
+      zps: 'ZPS — Special Protection',
+      zmd: 'ZMD — Sustainable Mgmt',
+      zdd: 'ZDD — Sustainable Dev',
+    }
+  };
 
-  // Map center and zoom — set to your park's coordinates
-  const MAP_CENTER = [45.65, 25.60];   // ← CHANGE [lat, lng]
-  const MAP_ZOOM   = 13;
+  let currentLang = 'ro';
 
-  // Layer definitions
-  // type: 'wms'  — rendered server-side as image tiles (best for polygons/lines)
-  // type: 'wfs'  — raw GeoJSON fetched from server (best for points with popups)
+  function setLang(lang) {
+    currentLang = lang;
+    const t = T[lang];
+    document.documentElement.lang = lang;
+
+    document.getElementById('header-sub').textContent    = t.headerSub;
+    document.getElementById('status-text').textContent   = t.status;
+    document.getElementById('db-title').textContent      = t.dbTitle;
+    document.getElementById('db-subtitle').textContent   = t.dbSubtitle;
+    document.getElementById('kpi-area').textContent      = t.kpiArea;
+    document.getElementById('kpi-species').textContent   = t.kpiSpecies;
+    document.getElementById('kpi-trails').textContent    = t.kpiTrails;
+    document.getElementById('kpi-peak').textContent      = t.kpiPeak;
+    document.getElementById('kpi-bears').textContent     = t.kpiBears;
+    document.getElementById('db-info').textContent       = t.dbInfo;
+    document.getElementById('layers-title').textContent  = t.layersTitle;
+    document.getElementById('legend-header').textContent = t.legendTitle;
+    document.getElementById('grp-limits').textContent    = t.grpLimits;
+    document.getElementById('grp-veg').textContent       = t.grpVeg;
+    document.getElementById('grp-trails').textContent    = t.grpTrails;
+    document.getElementById('grp-poi').textContent       = t.grpPoi;
+    document.getElementById('grp-agrement').textContent  = t.grpAgrement;
+    document.getElementById('coords-bar').textContent    = t.coords;
+
+    // All data-ro / data-en elements
+    document.querySelectorAll(`[data-${lang}]`).forEach(el => {
+      el.textContent = el.getAttribute(`data-${lang}`);
+    });
+
+    // Lang buttons
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.textContent === lang.toUpperCase());
+    });
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // CONFIG
+  // ════════════════════════════════════════════════════════════════════════
+
+  const GEOSERVER_URL = '/geoserver';
+  const WORKSPACE     = 'bucegipark';          // ← GeoServer workspace name
+
+  const MAP_CENTER = [45.40, 25.45];     // Bucegi Park center
+  const MAP_ZOOM   = 11;
+
   const LAYER_CONFIG = {
 
-    boundary: {
+    park_boundary: {
       type: 'wms',
-      layer: `${WORKSPACE}:boundary`,   // ← GeoServer layer name
-      style: { color: '#e8734a', weight: 2.5, dashArray: '8 6', fillOpacity: 0.04 }
+      layer: `${WORKSPACE}:park_boundary`,
+    },
+
+    ROSCI0013: {
+      type: 'wms',
+      layer: `${WORKSPACE}:ROSCI0013`,
+    },
+
+    zoning: {
+      type: 'wms',
+      layer: `${WORKSPACE}:zoning`,
+    },
+
+    forest: {
+      type: 'wms',
+      layer: `${WORKSPACE}:forest`,
     },
 
     trails: {
@@ -600,51 +719,134 @@
       layer: `${WORKSPACE}:trails`,
     },
 
-    viewpoints: {
-      type: 'wfs',                       // WFS so we can show popups with feature data
-      layer: `${WORKSPACE}:viewpoints`,
-      popup: (props) => `
-        <div class="popup-title">${props.name || 'Viewpoint'}</div>
-        <div class="popup-tag">Viewpoint</div>
-        ${props.elevation    ? `<div class="popup-row"><span>Elevation</span><strong>${props.elevation} m</strong></div>` : ''}
-        ${props.difficulty   ? `<div class="popup-row"><span>Difficulty</span><strong>${props.difficulty}</strong></div>` : ''}
-        ${props.description  ? `<div class="popup-row"><span>Notes</span><strong>${props.description}</strong></div>` : ''}
-      `,
-      icon: `<div style="
-        width:32px;height:32px;border-radius:50%;
-        background:rgba(74,143,168,0.25);border:2px solid #4a8fa8;
-        display:flex;align-items:center;justify-content:center;
-        font-size:14px;cursor:pointer;
-        box-shadow:0 0 12px rgba(74,143,168,0.4);
-        transition:transform 0.15s;"
-        onmouseover="this.style.transform='scale(1.2)'"
-        onmouseout="this.style.transform='scale(1)'">👁</div>`
-    },
-
-    flora: {
+    theme_trails: {
       type: 'wms',
-      layer: `${WORKSPACE}:flora_zones`,
+      layer: `${WORKSPACE}:theme_trails`,
     },
 
-    water: {
-      type: 'wms',
-      layer: `${WORKSPACE}:water_bodies`,
-    },
-
-    facilities: {
+    peaks: {
       type: 'wfs',
-      layer: `${WORKSPACE}:facilities`,
-      popup: (props) => `
-        <div class="popup-title">${props.name || 'Facility'}</div>
-        <div class="popup-tag">${props.type || 'Facility'}</div>
-        ${props.hours       ? `<div class="popup-row"><span>Hours</span><strong>${props.hours}</strong></div>` : ''}
-        ${props.description ? `<div class="popup-row"><span>Info</span><strong>${props.description}</strong></div>` : ''}
-      `,
-      icon: `<div style="
-        width:28px;height:28px;border-radius:6px;
-        background:rgba(168,197,160,0.2);border:1.5px solid #a8c5a0;
-        display:flex;align-items:center;justify-content:center;
-        font-size:13px;">⌂</div>`
+      layer: `${WORKSPACE}:peaks`,
+      popup: (props) => {
+        const t = T[currentLang];
+        return `
+          <div class="popup-title">${props.name || props.nume || 'Vârf'}</div>
+          <div class="popup-tag">${t.peak}</div>
+          ${props.elevation || props.altitudine ? `<div class="popup-row"><span>${t.elevation}</span><strong>${props.elevation || props.altitudine} m</strong></div>` : ''}
+        `;
+      },
+      icon: `<div style="width:28px;height:28px;border-radius:50%;background:rgba(232,200,90,0.25);border:2px solid #e8c85a;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;box-shadow:0 0 10px rgba(232,200,90,0.4);transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">▲</div>`
+    },
+
+    shelters: {
+      type: 'wfs',
+      layer: `${WORKSPACE}:shelters`,
+      popup: (props) => {
+        const t = T[currentLang];
+        return `
+          <div class="popup-title">${props.name || props.nume || 'Refugiu'}</div>
+          <div class="popup-tag">${t.shelter}</div>
+          ${props.elevation  || props.altitudine ? `<div class="popup-row"><span>${t.elevation}</span><strong>${props.elevation || props.altitudine} m</strong></div>` : ''}
+          ${props.capacity   || props.capacitate ? `<div class="popup-row"><span>${t.capacity}</span><strong>${props.capacity || props.capacitate}</strong></div>` : ''}
+        `;
+      },
+      icon: `<div style="width:28px;height:28px;border-radius:5px;background:rgba(232,168,74,0.25);border:2px solid #e8a84a;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">⛺</div>`
+    },
+
+    cabins: {
+      type: 'wfs',
+      layer: `${WORKSPACE}:cabins`,
+      popup: (props) => {
+        const t = T[currentLang];
+        return `
+          <div class="popup-title">${props.name || props.nume || 'Cabană'}</div>
+          <div class="popup-tag">${t.cabin}</div>
+          ${props.elevation || props.altitudine ? `<div class="popup-row"><span>${t.elevation}</span><strong>${props.elevation || props.altitudine} m</strong></div>` : ''}
+          ${props.phone     || props.telefon    ? `<div class="popup-row"><span>${t.phone}</span><strong>${props.phone || props.telefon}</strong></div>` : ''}
+          ${props.hours     || props.program    ? `<div class="popup-row"><span>${t.hours}</span><strong>${props.hours || props.program}</strong></div>` : ''}
+        `;
+      },
+      icon: `<div style="width:28px;height:28px;border-radius:5px;background:rgba(196,130,90,0.25);border:2px solid #c4825a;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">🏠</div>`
+    },
+
+    ski: {
+      type: 'wfs',
+      layer: `${WORKSPACE}:ski_resorts`,
+      popup: (props) => {
+        const t = T[currentLang];
+        return `
+          <div class="popup-title">${props.name || props.nume || 'Stațiune schi'}</div>
+          <div class="popup-tag">${t.ski}</div>
+          ${props.altitude_min ? `<div class="popup-row"><span>${t.altMin}</span><strong>${props.altitude_min} m</strong></div>` : ''}
+          ${props.altitude_max ? `<div class="popup-row"><span>${t.altMax}</span><strong>${props.altitude_max} m</strong></div>` : ''}
+          ${props.slopes       ? `<div class="popup-row"><span>${t.slopes}</span><strong>${props.slopes}</strong></div>` : ''}
+        `;
+      },
+      icon: `<div style="width:28px;height:28px;border-radius:5px;background:rgba(74,143,168,0.25);border:2px solid #4a8fa8;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">⛷</div>`
+    },
+
+    admin: {
+      type: 'wfs',
+      layer: `${WORKSPACE}:admin_buildings`,
+      popup: (props) => {
+        const t = T[currentLang];
+        const typeLabel = props.type === 'infocenter' || props.tip === 'infocentru' ? t.infocenter : t.admin;
+        return `
+          <div class="popup-title">${props.name || props.nume || typeLabel}</div>
+          <div class="popup-tag">${typeLabel}</div>
+          ${props.address || props.adresa  ? `<div class="popup-row"><span>${t.address}</span><strong>${props.address || props.adresa}</strong></div>` : ''}
+          ${props.phone   || props.telefon ? `<div class="popup-row"><span>${t.phone}</span><strong>${props.phone || props.telefon}</strong></div>` : ''}
+          ${props.hours   || props.program ? `<div class="popup-row"><span>${t.hours}</span><strong>${props.hours || props.program}</strong></div>` : ''}
+        `;
+      },
+      icon: `<div style="width:28px;height:28px;border-radius:5px;background:rgba(168,197,160,0.2);border:1.5px solid #a8c5a0;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">ℹ</div>`
+    },
+
+    // ── Infrastructură agrement ──────────────────────────────────────────
+    // Pârtii — polygon layer, one per slope
+    ski_slopes: {
+      type: 'wfs',
+      layer: `${WORKSPACE}:ski_slopes`,
+      popup: (props) => {
+        const t = T[currentLang];
+        const name = props.Name || props.name || props.nume || (currentLang === 'ro' ? 'Pârtie schi' : 'Ski Slope');
+        return `
+          <div class="popup-title">${name}</div>
+          <div class="popup-tag">${currentLang === 'ro' ? 'Pârtie schi' : 'Ski Slope'}</div>
+          ${props.lungime || props.length ? `<div class="popup-row"><span>${t.length || (currentLang==='ro'?'Lungime':'Length')}</span><strong>${props.lungime || props.length} m</strong></div>` : ''}
+          ${props.dificultate || props.difficulty ? `<div class="popup-row"><span>${t.difficulty || (currentLang==='ro'?'Dificultate':'Difficulty')}</span><strong>${props.dificultate || props.difficulty}</strong></div>` : ''}
+        `;
+      },
+    },
+
+    // Telecabine & Telegondole — line layers
+    telecabine: {
+      type: 'wfs',
+      layer: `${WORKSPACE}:telecabine`,
+      popup: (props) => {
+        const name = props.Name || props.name || props.nume || (currentLang === 'ro' ? 'Telecabină' : 'Cable Car');
+        const count = props.None !== undefined ? props.None : '';
+        return `
+          <div class="popup-title">${name}</div>
+          <div class="popup-tag">${currentLang === 'ro' ? 'Telecabină / Telegondolă' : 'Cable Car / Gondola'}</div>
+          ${count ? `<div class="popup-row"><span>${currentLang === 'ro' ? 'Cabine' : 'Cabins'}</span><strong>${count}</strong></div>` : ''}
+        `;
+      },
+    },
+
+    // Teleschi & Telescaune — line layers
+    teleschi: {
+      type: 'wfs',
+      layer: `${WORKSPACE}:teleschi`,
+      popup: (props) => {
+        const name = props.Name || props.name || props.nume || (currentLang === 'ro' ? 'Teleschi' : 'Ski Lift');
+        const count = props.None !== undefined ? props.None : '';
+        return `
+          <div class="popup-title">${name}</div>
+          <div class="popup-tag">${currentLang === 'ro' ? 'Teleschi / Telescaun' : 'Ski Lift / Chairlift'}</div>
+          ${count ? `<div class="popup-row"><span>${currentLang === 'ro' ? 'Locuri' : 'Seats'}</span><strong>${count}</strong></div>` : ''}
+        `;
+      },
     }
   };
 
@@ -652,22 +854,15 @@
   // MAP INIT
   // ════════════════════════════════════════════════════════════════════════
 
-  const map = L.map('map', {
-    center: MAP_CENTER,
-    zoom: MAP_ZOOM,
-    zoomControl: false,
-    attributionControl: true
-  });
+  const map = L.map('map', { center: MAP_CENTER, zoom: MAP_ZOOM, zoomControl: false });
 
   L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-  // Basemap
   L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
     maxZoom: 20,
     attribution: '© <a href="https://stadiamaps.com/">Stadia Maps</a> © <a href="https://openmaptiles.org/">OpenMapTiles</a> © <a href="https://www.openstreetmap.org/copyright">OSM</a>'
   }).addTo(map);
 
-  // Coordinates bar
   map.on('mousemove', e => {
     document.getElementById('coords-bar').textContent =
       `${e.latlng.lat.toFixed(5)}°N  ${e.latlng.lng.toFixed(5)}°E`;
@@ -677,7 +872,7 @@
   // LAYER LOADER
   // ════════════════════════════════════════════════════════════════════════
 
-  const activeLayers = {};   // stores live Leaflet layer objects
+  const activeLayers = {};
   const wmsBase = `${GEOSERVER_URL}/wms`;
   const wfsBase = `${GEOSERVER_URL}/ows?service=WFS&version=1.0.0&request=GetFeature&outputFormat=application/json`;
 
@@ -706,100 +901,66 @@
 
   function loadWMS(key, config) {
     const layer = L.tileLayer.wms(wmsBase, {
-      layers: config.layer,
-      format: 'image/png',
-      transparent: true,
-      version: '1.1.1',
-      attribution: 'GeoServer'
+      layers: config.layer, format: 'image/png',
+      transparent: true, version: '1.1.1', attribution: 'GeoServer'
     });
-    layer.on('loading', () => setLayerLoading(key, true));
-    layer.on('load',    () => setLayerLoading(key, false));
-    layer.on('tileerror', () => {
-      setLayerLoading(key, false);
-      showError(`Failed to load layer: ${key}. Check GeoServer is running.`);
-    });
+    layer.on('loading',   () => setLayerLoading(key, true));
+    layer.on('load',      () => setLayerLoading(key, false));
+    layer.on('tileerror', () => { setLayerLoading(key, false); showError(`Layer "${key}" indisponibil.`); });
     return layer;
   }
 
   function loadWFS(key, config) {
     setLayerLoading(key, true);
-    const url = `${wfsBase}&typeName=${config.layer}`;
-
-    return fetch(url)
-      .then(r => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return r.json();
-      })
+    return fetch(`${wfsBase}&typeName=${config.layer}`)
+      .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
       .then(data => {
         setLayerLoading(key, false);
-
         const iconEl = config.icon
-          ? L.divIcon({ className: '', html: config.icon, iconSize: [32, 32], iconAnchor: [16, 16] })
+          ? L.divIcon({ className: '', html: config.icon, iconSize: [28, 28], iconAnchor: [14, 14] })
           : null;
-
         return L.geoJSON(data, {
           pointToLayer: (feature, latlng) =>
             iconEl ? L.marker(latlng, { icon: iconEl }) : L.circleMarker(latlng),
           style: config.style || {},
           onEachFeature: (feature, layer) => {
-            if (config.popup) {
-              layer.bindPopup(config.popup(feature.properties || {}));
-            }
+            if (config.popup) layer.bindPopup(config.popup(feature.properties || {}));
           }
         });
       })
-      .catch(err => {
-        setLayerLoading(key, false);
-        showError(`Could not load ${key}: ${err.message}`);
-        return null;
-      });
+      .catch(err => { setLayerLoading(key, false); showError(`Layer "${key}": ${err.message}`); return null; });
   }
 
   async function addLayer(key) {
     const config = LAYER_CONFIG[key];
     if (!config) return;
-
     if (config.type === 'wms') {
       const layer = loadWMS(key, config);
       layer.addTo(map);
       activeLayers[key] = layer;
     } else if (config.type === 'wfs') {
       const layer = await loadWFS(key, config);
-      if (layer) {
-        layer.addTo(map);
-        activeLayers[key] = layer;
-      }
+      if (layer) { layer.addTo(map); activeLayers[key] = layer; }
     }
   }
 
   function removeLayer(key) {
-    if (activeLayers[key]) {
-      map.removeLayer(activeLayers[key]);
-      delete activeLayers[key];
-    }
+    if (activeLayers[key]) { map.removeLayer(activeLayers[key]); delete activeLayers[key]; }
   }
 
-  // Toggle handler (called from layer panel onclick)
   function toggleLayer(el) {
     el.classList.toggle('active');
     const key = el.dataset.layer;
-    if (el.classList.contains('active')) {
-      addLayer(key);
-    } else {
-      removeLayer(key);
-    }
+    el.classList.contains('active') ? addLayer(key) : removeLayer(key);
   }
 
   // ════════════════════════════════════════════════════════════════════════
-  // BOOT — load all default-on layers
+  // BOOT
   // ════════════════════════════════════════════════════════════════════════
 
   async function init() {
-    const defaultOn = ['boundary', 'trails', 'viewpoints', 'flora', 'water'];
-    for (const key of defaultOn) {
-      await addLayer(key);
-    }
-    // Hide loading screen
+    const defaultOn = ['park_boundary', 'ROSCI0013', 'zoning', 'forest', 'trails', 'theme_trails', 'peaks', 'shelters', 'cabins', 'ski', 'admin'];
+    for (const key of defaultOn) await addLayer(key);
     setTimeout(() => {
       document.getElementById('loading').classList.add('hidden');
       setTimeout(() => document.getElementById('loading').remove(), 800);
