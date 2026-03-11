@@ -8,6 +8,7 @@ services:
       - GEOSERVER_DATA_DIR=/opt/geoserver/data_dir
       - GEOSERVER_ADMIN_USER=admin
       - GEOSERVER_ADMIN_PASSWORD=${GEOSERVER_ADMIN_PASSWORD}
+      - PROXY_BASE_URL=https://map.bucegipark.ro/geoserver
       - INITIAL_MEMORY=512M
       - MAXIMUM_MEMORY=1024M
     volumes:
