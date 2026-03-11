@@ -212,7 +212,6 @@
 
     .layer-swatch { width: 18px; height: 4px; border-radius: 2px; flex-shrink: 0; }
     .layer-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin: 0 4px; }
-    .layer-dash { width: 20px; height: 0; border-top: 3px dashed; flex-shrink: 0; }
     .layer-label { font-size: 0.71rem; color: var(--mist); font-weight: 400; flex: 1; }
 
     .layer-loading { font-size: 0.58rem; color: var(--gold); margin-left: auto; animation: blink 1s infinite; }
@@ -319,120 +318,6 @@
     .loading-bar-fill { height: 100%; background: var(--fern); border-radius: 1px; animation: load 1.5s ease forwards; }
 
     @keyframes load { from { width: 0; } to { width: 100%; } }
-
-    /* ── Mobile bottom nav ── */
-    #mobile-nav {
-      display: none;
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      z-index: 1100;
-      background: var(--panel-bg);
-      border-top: 1px solid var(--panel-border);
-      backdrop-filter: blur(12px);
-      padding: 8px 0 max(8px, env(safe-area-inset-bottom));
-      justify-content: space-around;
-    }
-
-    .mob-btn {
-      display: flex; flex-direction: column; align-items: center; gap: 3px;
-      background: none; border: none; cursor: pointer;
-      color: var(--stone); font-family: 'DM Sans', sans-serif;
-      font-size: 0.58rem; letter-spacing: 0.05em; padding: 4px 16px;
-      transition: color 0.2s;
-    }
-
-    .mob-btn.active { color: var(--fern); }
-    .mob-btn svg { width: 20px; height: 20px; }
-
-    /* ── Mobile drawer ── */
-    #mobile-drawer {
-      display: none;
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      z-index: 1050;
-      background: rgba(12, 24, 16, 0.97);
-      border-top: 1px solid var(--panel-border);
-      border-radius: 16px 16px 0 0;
-      backdrop-filter: blur(16px);
-      transform: translateY(100%);
-      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-      max-height: 75vh;
-      overflow-y: auto;
-    }
-
-    #mobile-drawer.open { transform: translateY(0); }
-
-    #drawer-handle {
-      width: 36px; height: 4px;
-      background: var(--panel-border);
-      border-radius: 2px;
-      margin: 10px auto 0;
-    }
-
-    #drawer-close {
-      position: absolute; top: 10px; right: 16px;
-      background: none; border: none; color: var(--stone);
-      font-size: 1.2rem; cursor: pointer; line-height: 1;
-    }
-
-    #drawer-content { padding: 16px; }
-
-    /* ── Mobile overlay ── */
-    #drawer-overlay {
-      display: none;
-      position: fixed; inset: 0;
-      z-index: 1040;
-      background: rgba(0,0,0,0.4);
-    }
-
-    /* ── Responsive breakpoint ── */
-    @media (max-width: 640px) {
-
-      #mobile-nav    { display: flex; }
-      #mobile-drawer { display: block; }
-
-      /* Hide desktop panels */
-      #dashboard, #layer-panel, #legend { display: none !important; }
-
-      /* Compact header */
-      #header { padding: 8px 12px; }
-      #header-title img { width: 32px; height: 28px; }
-      #header-text h1 { font-size: 0.95rem; }
-      #header-text span { display: none; }
-      #header-status span { display: none; }
-      #status-text { display: none; }
-
-      /* Push map content above bottom nav */
-      #map { height: calc(100vh - 60px); }
-      #coords-bar { bottom: 68px; font-size: 0.58rem; }
-      #error-toast { top: 56px; }
-
-      .leaflet-control-zoom { margin-bottom: 70px !important; }
-
-      /* Drawer KPI grid — 2 cols on mobile */
-      .mob-kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-
-      .mob-kpi-cell {
-        background: rgba(45, 90, 61, 0.15);
-        border: 1px solid var(--panel-border);
-        border-radius: 8px;
-        padding: 10px 12px;
-      }
-
-      .mob-kpi-value { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--cream); line-height: 1; }
-      .mob-kpi-value span { font-size: 0.65rem; color: var(--fern); font-family: 'DM Sans', sans-serif; }
-      .mob-kpi-label { font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--stone); margin-top: 3px; }
-
-      .mob-section-title {
-        font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
-        color: var(--fern); margin: 14px 0 8px;
-      }
-
-      .mob-info {
-        font-size: 0.72rem; color: var(--sage); line-height: 1.6;
-        font-weight: 300; margin-bottom: 12px;
-      }
-    }
   </style>
 </head>
 <body>
@@ -518,7 +403,7 @@
   <div class="layer-group" id="grp-limits">Limite și zonare</div>
   <div class="layer-item active" data-layer="park_boundary" onclick="toggleLayer(this)">
     <div class="layer-toggle"></div>
-    <div class="layer-dash" style="background:#e8734a;"></div>
+    <div class="layer-swatch" style="background:#e8734a;"></div>
     <span class="layer-label" data-ro="Limita parcului" data-en="Park Boundary">Limita parcului</span>
   </div>
   <div class="layer-item active" data-layer="zoning" onclick="toggleLayer(this)">
@@ -699,9 +584,6 @@
       grpTrails:   'Trasee',
       grpPoi:      'Puncte de interes',
       grpAgrement: 'Infrastructură agrement',
-      mobInfo:     'Parc',
-      mobLayers:   'Straturi',
-      mobLegend:   'Legendă',
       coords:      'Plasați cursorul pe hartă',
       elevation:   'Altitudine maximă',
       capacity:    'Capacitate',
@@ -741,9 +623,6 @@
       grpTrails:   'Trails',
       grpPoi:      'Points of Interest',
       grpAgrement: 'Recreation Infrastructure',
-      mobInfo:     'Park',
-      mobLayers:   'Layers',
-      mobLegend:   'Legend',
       coords:      'Hover map to show coordinates',
       elevation:   'Elevation',
       capacity:    'Capacity',
@@ -801,19 +680,6 @@
     document.querySelectorAll('.lang-btn').forEach(btn => {
       btn.classList.toggle('active', btn.textContent === lang.toUpperCase());
     });
-
-    // Mobile nav labels
-    const mobInfo = document.getElementById('mob-btn-info');
-    const mobLayers = document.getElementById('mob-btn-layers');
-    const mobLegend = document.getElementById('mob-btn-legend');
-    if (mobInfo) mobInfo.textContent = t.mobInfo;
-    if (mobLayers) mobLayers.textContent = t.mobLayers;
-    if (mobLegend) mobLegend.textContent = t.mobLegend;
-
-    // Mobile lang button
-    const mob = document.getElementById('mob-lang-label');
-    if (mob) mob.textContent = lang === 'ro' ? 'EN' : 'RO';
-    if (typeof currentDrawer !== 'undefined' && currentDrawer) openDrawer(currentDrawer);
   }
 
   // ════════════════════════════════════════════════════════════════════════
@@ -993,9 +859,9 @@
 
   L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
     maxZoom: 20,
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    attribution: '© <a href="https://stadiamaps.com/">Stadia Maps</a> © <a href="https://openmaptiles.org/">OpenMapTiles</a> © <a href="https://www.openstreetmap.org/copyright">OSM</a>'
   }).addTo(map);
 
   map.on('mousemove', e => {
@@ -1109,174 +975,6 @@
 
   init();
 
-</script>
-<!-- Mobile bottom nav -->
-<div id="mobile-nav">
-  <button class="mob-btn" onclick="openDrawer('info')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-    </svg>
-    <span id="mob-btn-info">Parc</span>
-  </button>
-  <button class="mob-btn" onclick="openDrawer('layers')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <polygon points="12 2 2 7 12 12 22 7 12 2"/>
-      <polyline points="2 17 12 22 22 17"/>
-      <polyline points="2 12 12 17 22 12"/>
-    </svg>
-    <span id="mob-btn-layers">Straturi</span>
-  </button>
-  <button class="mob-btn" onclick="openDrawer('legend')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/>
-      <line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/>
-    </svg>
-    <span id="mob-btn-legend">Legendă</span>
-  </button>
-  <button class="mob-btn" onclick="setLang(currentLang==='ro'?'en':'ro')" id="mob-lang-btn">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
-      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-    </svg>
-    <span id="mob-lang-label">EN</span>
-  </button>
-</div>
-
-<!-- Drawer overlay -->
-<div id="drawer-overlay" onclick="closeDrawer()"></div>
-
-<!-- Mobile drawer -->
-<div id="mobile-drawer">
-  <div id="drawer-handle"></div>
-  <button id="drawer-close" onclick="closeDrawer()">✕</button>
-  <div id="drawer-content"></div>
-</div>
-
-<script>
-  // ── Drawer content templates ─────────────────────────────────────────
-
-  function drawerInfoHTML() {
-    const t = T[currentLang];
-    return `
-      <div class="mob-section-title">${t.dbTitle}</div>
-      <div class="mob-kpi-grid">
-        <div class="mob-kpi-cell">
-          <div class="mob-kpi-value">32,520<span> ha</span></div>
-          <div class="mob-kpi-label">${t.kpiArea}</div>
-        </div>
-        <div class="mob-kpi-cell">
-          <div class="mob-kpi-value">1,200+</div>
-          <div class="mob-kpi-label">${t.kpiSpecies}</div>
-        </div>
-        <div class="mob-kpi-cell">
-          <div class="mob-kpi-value">150<span> km</span></div>
-          <div class="mob-kpi-label">${t.kpiTrails}</div>
-        </div>
-        <div class="mob-kpi-cell">
-          <div class="mob-kpi-value">~100</div>
-          <div class="mob-kpi-label">${t.kpiBears}</div>
-        </div>
-        <div class="mob-kpi-cell">
-          <div class="mob-kpi-value">2,505<span> m</span></div>
-          <div class="mob-kpi-label">${t.kpiPeak}</div>
-        </div>
-      </div>
-      <p class="mob-info">${t.dbInfo}</p>
-    `;
-  }
-
-  function drawerLayersHTML() {
-    // Clone the desktop layer panel contents
-    const panel = document.getElementById('layer-panel').cloneNode(true);
-    panel.removeAttribute('id');
-    panel.style.cssText = 'width:100%;border:none;border-radius:0;background:none;backdrop-filter:none;animation:none;';
-    // Remove panel header (we have drawer title)
-    const hdr = panel.querySelector('#layer-panel-header');
-    if (hdr) hdr.remove();
-    // Fix onclick handlers on cloned nodes
-    panel.querySelectorAll('.layer-item').forEach(item => {
-      item.onclick = function() {
-        const key = this.dataset.layer;
-        // Sync both desktop and mobile toggles
-        const allItems = document.querySelectorAll(`[data-layer="${key}"]`);
-        const willBeActive = !this.classList.contains('active');
-        allItems.forEach(el => {
-          el.classList.toggle('active', willBeActive);
-        });
-        willBeActive ? addLayer(key) : removeLayer(key);
-      };
-      // Sync active state from desktop
-      const desktopItem = document.querySelector(`#layer-panel [data-layer="${item.dataset.layer}"]`);
-      if (desktopItem) item.classList.toggle('active', desktopItem.classList.contains('active'));
-    });
-    const wrapper = document.createElement('div');
-    wrapper.appendChild(panel);
-    return wrapper.innerHTML;
-  }
-
-  function drawerLegendHTML() {
-    const legend = document.getElementById('legend').cloneNode(true);
-    legend.removeAttribute('id');
-    legend.style.cssText = 'width:100%;border:none;border-radius:0;background:none;backdrop-filter:none;animation:none;max-height:none;overflow:visible;';
-    const hdr = legend.querySelector('#legend-header');
-    if (hdr) hdr.remove();
-    const wrapper = document.createElement('div');
-    wrapper.appendChild(legend);
-    return wrapper.innerHTML;
-  }
-
-  let currentDrawer = null;
-
-  function openDrawer(type) {
-    const drawer = document.getElementById('mobile-drawer');
-    const overlay = document.getElementById('drawer-overlay');
-    const content = document.getElementById('drawer-content');
-    const t = T[currentLang];
-
-    // Update nav button active states
-    document.querySelectorAll('.mob-btn').forEach(b => b.classList.remove('active'));
-
-    let html = '';
-    let title = '';
-
-    if (type === 'info') {
-      html = drawerInfoHTML();
-      title = t.dbTitle;
-      document.querySelector('[onclick="openDrawer(\'info\')"]').classList.add('active');
-    } else if (type === 'layers') {
-      html = drawerLayersHTML();
-      title = t.layersTitle;
-      document.querySelector('[onclick="openDrawer(\'layers\')"]').classList.add('active');
-    } else if (type === 'legend') {
-      html = drawerLegendHTML();
-      title = t.legendTitle;
-      document.querySelector('[onclick="openDrawer(\'legend\')"]').classList.add('active');
-    }
-
-    if (currentDrawer === type && drawer.classList.contains('open')) {
-      closeDrawer();
-      return;
-    }
-
-    content.innerHTML = `<div class="mob-section-title" style="margin-top:4px;">${title}</div>${html}`;
-    drawer.classList.add('open');
-    overlay.style.display = 'block';
-    currentDrawer = type;
-  }
-
-  function closeDrawer() {
-    document.getElementById('mobile-drawer').classList.remove('open');
-    document.getElementById('drawer-overlay').style.display = 'none';
-    document.querySelectorAll('.mob-btn').forEach(b => b.classList.remove('active'));
-    currentDrawer = null;
-  }
-
-  // Update mobile lang button when language switches
-  function updateMobileLang(lang) {
-    const mob = document.getElementById('mob-lang-label');
-    if (mob) mob.textContent = lang === 'ro' ? 'EN' : 'RO';
-    if (currentDrawer) openDrawer(currentDrawer);
-  }
 </script>
 </body>
 </html>
