@@ -16,7 +16,7 @@ services:
     networks:
       - park-network
     expose:
-      - "8090"
+      - "8090:8080"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/geoserver/web/"]
       interval: 30s
