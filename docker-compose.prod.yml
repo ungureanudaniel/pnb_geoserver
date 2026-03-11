@@ -9,6 +9,7 @@ services:
       - GEOSERVER_ADMIN_USER=admin
       - GEOSERVER_ADMIN_PASSWORD=${GEOSERVER_ADMIN_PASSWORD}
       - PROXY_BASE_URL=https://map.bucegipark.ro/geoserver
+      - GEOSERVER_CSRF_WHITELIST=map.bucegipark.ro
       - INITIAL_MEMORY=512M
       - MAXIMUM_MEMORY=1024M
     volumes:
