@@ -1,6 +1,5 @@
 services:
 
-  # ── GeoServer ────────────────────────────────────────────────────────────
   geoserver:
     image: kartoza/geoserver:2.25.0
     container_name: geoserver
@@ -13,18 +12,17 @@ services:
       - MAXIMUM_MEMORY=1024M
     volumes:
       - ./geoserver/data:/opt/geoserver/data_dir
+    ports:
+      - "8090:8080"
     networks:
       - park-network
-    expose:
-      - "8090:8080"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/geoserver/web/"]
       interval: 30s
       timeout: 10s
-      retries: 5
-      start_period: 60s
+      retries: 10
+      start_period: 120s
 
-  # ── Nginx ─────────────────────────────────────────────────────────────────
   nginx:
     build:
       context: ./nginx
@@ -42,10 +40,8 @@ services:
     networks:
       - park-network
     depends_on:
-      geoserver:
-        condition: service_healthy
+      - geoserver
 
-# ── Shared network ───────────────────────────────────────────────────────────
 networks:
   park-network:
     driver: bridge
