@@ -534,7 +534,7 @@
   <div class="layer-group" id="grp-reserves">Rezervații naturale</div>
   <div class="layer-item active" data-layer="reservesoug49" onclick="toggleLayer(this)">
     <div class="layer-toggle"></div>
-    <div class="layer-swatch" style="background:#5dade2; opacity:0.8;"></div>
+    <div class="layer-swatch" style="background:#000000; opacity:0.8;"></div>
     <span class="layer-label" data-ro="Rezervații naturale conform OUG nr. 49 / 2016" data-en="Natural reserves according to OUG no. 49 / 2016">Rezervații naturale conform OUG nr. 49 / 2016</span>
   </div>
   <div class="layer-item active" data-layer="reservesapnbproposal" onclick="toggleLayer(this)">
@@ -632,6 +632,14 @@
   <div class="legend-item">
     <div class="legend-box" style="background:#f5c842; opacity:0.7;"></div>
     <span class="legend-label" data-ro="ZDD — Dezvoltare Durabilă" data-en="ZDD — Sustainable Dev">ZDD — Dezvoltare Durabilă</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background:#000000; opacity:0.7;"></div>
+    <span class="legend-label" data-ro="Rezervații naturale conform OUG nr. 49 / 2016" data-en="Natural reserves according to OUG no. 49 / 2016">Rezervații naturale conform OUG nr. 49 / 2016</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background:#70c6ff; opacity:0.7;"></div>
+    <span class="legend-label" data-ro="Rezervații naturale propuse APN BUCEGI" data-en="Natural reserves proposed by APN BUCEGI">Rezervații naturale propuse APN BUCEGI</span>
   </div>
   <div class="legend-item">
     <div class="legend-line" style="background:#2d5a3d; height:8px; opacity:0.7;"></div>
@@ -852,7 +860,14 @@
       type: 'wms',
       layer: `${WORKSPACE}:zoning`,
     },
-
+    reservesoug49: {
+      type: 'wms',
+      layer: `${WORKSPACE}:reservesoug49`,
+    },
+    reservesapnbproposal: {
+      type: 'wms',
+      layer: `${WORKSPACE}:reservesapnbproposal`,
+    },
     forest: {
       type: 'wms',
       layer: `${WORKSPACE}:forest`,
@@ -1109,7 +1124,7 @@
   // ════════════════════════════════════════════════════════════════════════
 
   async function init() {
-    const defaultOn = ['park_boundary', 'zoning', 'forest', 'trails', 'theme_trails'];
+    const defaultOn = ['park_boundary', 'zoning', 'reservesoug49', 'reservesapnbproposal', 'forest', 'trails', 'theme_trails'];
     for (const key of defaultOn) await addLayer(key);
     setTimeout(() => {
       document.getElementById('loading').classList.add('hidden');
