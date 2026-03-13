@@ -526,29 +526,29 @@
     <div class="layer-dash" style="background:#e8734a;"></div>
     <span class="layer-label" data-ro="Limita parcului" data-en="Park Boundary">Limita parcului</span>
   </div>
-  <div class="layer-item" data-layer="zoning" onclick="toggleLayer(this)">
+  <div class="layer-item active" data-layer="zoning" onclick="toggleLayer(this)">
     <div class="layer-toggle"></div>
     <div class="layer-swatch" style="background:#7b9e6b; opacity:0.8;"></div>
     <span class="layer-label" data-ro="Zonare parc" data-en="Park Zoning">Zonare parc</span>
   </div>
-  <div class="layer-item" data-layer="ROSCI0013" onclick="toggleLayer(this)">
+  <div class="layer-item active" data-layer="ROSCI0013" onclick="toggleLayer(this)">
     <div class="layer-toggle"></div>
     <div class="layer-dash" style="background:#9b59b6; opacity:0.8;"></div>
     <span class="layer-label" data-ro="Sit Natura 2000" data-en="Natura 2000 Site">Sit Natura 2000</span>
   </div>
   <div class="layer-group" id="grp-reserves">Rezervații naturale</div>
-  <div class="layer-item" data-layer="reservesoug49" onclick="toggleLayer(this)">
+  <div class="layer-item active" data-layer="reservesoug49" onclick="toggleLayer(this)">
     <div class="layer-toggle"></div>
     <div class="layer-dash" style="background:#000000; opacity:0.8;"></div>
     <span class="layer-label" data-ro="Rezervații naturale conform OUG nr. 49 / 2016" data-en="Natural reserves according to OUG no. 49 / 2016">Rezervații naturale conform OUG nr. 49 / 2016</span>
   </div>
-  <div class="layer-item" data-layer="reservesapnbproposal" onclick="toggleLayer(this)">
+  <div class="layer-item active" data-layer="reservesapnbproposal" onclick="toggleLayer(this)">
     <div class="layer-toggle"></div>
     <div class="layer-swatch" style="background:#00fbff; opacity:0.8;"></div>
     <span class="layer-label" data-ro="Rezervații naturale propuse APN BUCEGI" data-en="Natural reserves proposed by APN BUCEGI">Rezervații naturale propuse APN BUCEGI</span>
   </div>
   <div class="layer-group" id="grp-veg">Vegetație</div>
-  <div class="layer-item" data-layer="forest" onclick="toggleLayer(this)">
+  <div class="layer-item active" data-layer="forest" onclick="toggleLayer(this)">
     <div class="layer-toggle"></div>
     <div class="layer-swatch" style="background:#2d5a3d; opacity:0.9;"></div>
     <span class="layer-label" data-ro="Acoperire forestieră" data-en="Forest Cover">Acoperire forestieră</span>
@@ -1132,7 +1132,7 @@
   // ════════════════════════════════════════════════════════════════════════
 
   async function init() {
-    const defaultOn = ['park_boundary', 'zoning', 'reservesoug49', 'reservesapnbproposal', 'forest', 'trails', 'theme_trails'];
+    const defaultOn = ['park_boundary', 'ROSCI0013', 'zoning', 'peaks'];
     for (const key of defaultOn) await addLayer(key);
     setTimeout(() => {
       document.getElementById('loading').classList.add('hidden');
