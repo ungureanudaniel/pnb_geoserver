@@ -528,13 +528,13 @@
   </div>
   <div class="layer-item" data-layer="ROSCI0013" onclick="toggleLayer(this)">
     <div class="layer-toggle"></div>
-    <div class="layer-swatch" style="background:#9b59b6; opacity:0.8;"></div>
+    <div class="layer-dash" style="background:#9b59b6; opacity:0.8;"></div>
     <span class="layer-label" data-ro="Sit Natura 2000" data-en="Natura 2000 Site">Sit Natura 2000</span>
   </div>
   <div class="layer-group" id="grp-reserves">Rezervații naturale</div>
   <div class="layer-item active" data-layer="reservesoug49" onclick="toggleLayer(this)">
     <div class="layer-toggle"></div>
-    <div class="layer-swatch" style="background:#000000; opacity:0.8;"></div>
+    <div class="layer-dash" style="background:#000000; opacity:0.8;"></div>
     <span class="layer-label" data-ro="Rezervații naturale conform OUG nr. 49 / 2016" data-en="Natural reserves according to OUG no. 49 / 2016">Rezervații naturale conform OUG nr. 49 / 2016</span>
   </div>
   <div class="layer-item active" data-layer="reservesapnbproposal" onclick="toggleLayer(this)">
@@ -705,6 +705,7 @@
       dbTitle:     'Prezentare Parc',
       dbSubtitle:  'Condiții actuale',
       kpiArea:     'Suprafață',
+      kpiForest:   'Suprafață împădurită',
       kpiSpecies:  'Specii floră',
       kpiTrails:   'Trasee marcate',
       kpiPeak:     'altitudine',
@@ -747,6 +748,7 @@
       dbTitle:     'Park Overview',
       dbSubtitle:  'Live conditions',
       kpiArea:     'Total Area',
+      kpiForest:   'Forest Cover',
       kpiSpecies:  'Flora Species',
       kpiTrails:   'Marked Trails',
       kpiPeak:     'Highest Peak',
@@ -796,6 +798,7 @@
     document.getElementById('db-title').textContent      = t.dbTitle;
     document.getElementById('db-subtitle').textContent   = t.dbSubtitle;
     document.getElementById('kpi-area').textContent      = t.kpiArea;
+    document.getElementById('kpi-forest').textContent    = t.kpiForest;
     document.getElementById('kpi-species').textContent   = t.kpiSpecies;
     document.getElementById('kpi-trails').textContent    = t.kpiTrails;
     document.getElementById('kpi-peak').textContent      = t.kpiPeak;
@@ -1188,6 +1191,10 @@
         <div class="mob-kpi-cell">
           <div class="mob-kpi-value">32,520<span> ha</span></div>
           <div class="mob-kpi-label">${t.kpiArea}</div>
+        </div>
+        <div class="mob-kpi-cell">
+          <div class="mob-kpi-value">21,369<span> ha</span></div>
+          <div class="mob-kpi-label">${t.kpiForest}</div>
         </div>
         <div class="mob-kpi-cell">
           <div class="mob-kpi-value">1,200+</div>
