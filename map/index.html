@@ -897,8 +897,9 @@
       cql_filter: 'ele > 2400',
       popup: (props) => {
         const t = T[currentLang];
+        const typeLabel = props.name || props.nume || 'Vârf';
         return `
-          <div class="popup-title">${props.name || props.nume || 'Vârf'}</div>
+          <div class="popup-title">${typeLabel}</div>
           <div class="popup-tag">${t.peak}</div>
           ${props.ele || props.altitudine ? `<div class="popup-row"><span>${t.ele}</span><strong>${props.ele || props.altitudine} m</strong></div>` : ''}
         `;
@@ -958,22 +959,21 @@
       layer: `${WORKSPACE}:admin`,
       popup: (props) => {
         const t = T[currentLang];
-        const typeLabel = props.type === 'infocenter' || props.tip === 'infocentru' ? t.infocenter : t.admin;
+        const typeLabel = props.tip_constr === 'Centru de Informare Parc' ? t.infocenter : t.admin;
         return `
           <div class="popup-title">${props.name || props.nume || typeLabel}</div>
           <div class="popup-tag">${typeLabel}</div>
           ${props.address || props.adresa  ? `<div class="popup-row"><span>${t.address}</span><strong>${props.address || props.adresa}</strong></div>` : ''}
           ${props.phone   || props.telefon ? `<div class="popup-row"><span>${t.phone}</span><strong>${props.phone || props.telefon}</strong></div>` : ''}
-          ${props.hours   || props.program ? `<div class="popup-row"><span>${t.hours}</span><strong>${props.hours || props.program}</strong></div>` : ''}
         `;
       },
       icon: `<div style="width:32px;height:32px;border-radius:6px;background:rgba(20,35,25,0.85);border:1.5px solid #a8c5a0;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.4);transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a8c5a0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/>
-    <line x1="12" y1="11" x2="12" y2="11.5" stroke-width="2.5"/>
-    <line x1="12" y1="13.5" x2="12" y2="17" stroke-width="2"/>
-  </svg>
-</div>`
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a8c5a0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/>
+        <line x1="12" y1="11" x2="12" y2="11.5" stroke-width="2.5"/>
+        <line x1="12" y1="13.5" x2="12" y2="17" stroke-width="2"/>
+      </svg>
+    </div>`
     },
 
     // ── Infrastructură agrement ──────────────────────────────────────────
