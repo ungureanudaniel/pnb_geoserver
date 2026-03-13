@@ -961,7 +961,7 @@
         const t = T[currentLang];
         const typeLabel = props.tip_constr === 'Centru de Informare Parc' ? t.infocenter : t.admin;
         return `
-          <div class="popup-title">${props.name || props.nume || typeLabel}</div>
+          <div class="popup-title">${props.Nume || props.name || props.nume || typeLabel}</div>
           <div class="popup-tag">${typeLabel}</div>
           ${props.address || props.adresa  ? `<div class="popup-row"><span>${t.address}</span><strong>${props.address || props.adresa}</strong></div>` : ''}
           ${props.phone   || props.telefon ? `<div class="popup-row"><span>${t.phone}</span><strong>${props.phone || props.telefon}</strong></div>` : ''}
