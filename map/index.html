@@ -967,7 +967,13 @@
           ${props.hours   || props.program ? `<div class="popup-row"><span>${t.hours}</span><strong>${props.hours || props.program}</strong></div>` : ''}
         `;
       },
-      icon: `<div style="width:28px;height:28px;border-radius:5px;background:rgba(168,197,160,0.2);border:1.5px solid #a8c5a0;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">ℹ</div>`
+      icon: `<div style="width:32px;height:32px;border-radius:6px;background:rgba(20,35,25,0.85);border:1.5px solid #a8c5a0;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.4);transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a8c5a0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/>
+    <line x1="12" y1="11" x2="12" y2="11.5" stroke-width="2.5"/>
+    <line x1="12" y1="13.5" x2="12" y2="17" stroke-width="2"/>
+  </svg>
+</div>`
     },
 
     // ── Infrastructură agrement ──────────────────────────────────────────
