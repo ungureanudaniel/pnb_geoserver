@@ -1138,7 +1138,7 @@
   // ════════════════════════════════════════════════════════════════════════
 
   async function init() {
-    const defaultOn = ['park_boundary', 'ROSCI0013', 'zoning', 'peaks'];
+    const defaultOn = ['park_boundary', 'ROSCI0013', 'zoning', 'peaks', 'admin'];
     for (const key of defaultOn) await addLayer(key);
     setTimeout(() => {
       document.getElementById('loading').classList.add('hidden');
