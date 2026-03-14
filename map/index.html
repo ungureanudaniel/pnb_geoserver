@@ -566,12 +566,12 @@
     <span class="layer-label" data-ro="Trasee tematice" data-en="Theme Trails">Trasee tematice</span>
   </div> -->
 
-  <div class="layer-group" id="grp-poi">Puncte de interes</div>
+  <!-- <div class="layer-group" id="grp-poi">Puncte de interes</div>
   <div class="layer-item active" data-layer="peaks" onclick="toggleLayer(this)">
     <div class="layer-toggle"></div>
     <div class="layer-dot" style="background:#e8c85a;"></div>
     <span class="layer-label" data-ro="Vârfuri >2400m" data-en="Peaks >2400m">Vârfuri >2400m</span>
-  </div>
+  </div> -->
   <!-- <div class="layer-item" data-layer="shelters" onclick="toggleLayer(this)">
     <div class="layer-toggle"></div>
     <div class="layer-dot" style="background:#e8a84a;"></div>
@@ -651,10 +651,10 @@
     <div class="legend-line" style="background:#a06bc4;"></div>
     <span class="legend-label" data-ro="Traseu tematic" data-en="Theme Trail">Traseu tematic</span>
   </div> -->
-  <div class="legend-item">
+  <!-- <div class="legend-item">
     <div class="legend-dot" style="background:#e8c85a;"></div>
     <span class="legend-label" data-ro="Vârf montan" data-en="Mountain Peak">Vârf montan</span>
-  </div>
+  </div> -->
   <!-- <div class="legend-item">
     <div class="legend-dot" style="background:#e8a84a;"></div>
     <span class="legend-label" data-ro="Refugiu" data-en="Shelter">Refugiu</span>
@@ -667,10 +667,10 @@
     <div class="legend-dot" style="background:#4a8fa8;"></div>
     <span class="legend-label" data-ro="Stațiune schi" data-en="Ski Resort">Stațiune schi</span>
   </div> -->
-  <div class="legend-item">
+  <!-- <div class="legend-item">
     <div class="legend-dot" style="background:#a8c5a0;"></div>
     <span class="legend-label" data-ro="Administrație" data-en="Administration">Administrație</span>
-  </div>
+  </div> -->
   <div class="legend-item">
     <div class="legend-box" style="background:#5dade2; opacity:0.7;"></div>
     <span class="legend-label" data-ro="Pârtie schi" data-en="Ski Slope">Pârtie schi</span>
@@ -1114,7 +1114,7 @@
   // ════════════════════════════════════════════════════════════════════════
 
   async function init() {
-    const defaultOn = ['park_boundary', 'ROSCI0013', 'zoning', 'peaks', 'admin'];
+    const defaultOn = ['park_boundary', 'ROSCI0013', 'zoning', 'admin'];
     for (const key of defaultOn) await addLayer(key);
     setTimeout(() => {
       document.getElementById('loading').classList.add('hidden');
