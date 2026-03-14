@@ -596,7 +596,7 @@
   <div class="layer-item" data-layer="infrastructura_agrement" onclick="toggleLayer(this)">
     <div class="layer-toggle"></div>
     <div style="display:flex;flex-direction:column;gap:2px;width:20px;">
-      <div style="height:2px;background:#5dade2;border-radius:1px;"></div>
+      <!-- <div style="height:2px;background:#5dade2;border-radius:1px;"></div> -->
       <div style="height:2px;background:#e74c3c;border-radius:1px;"></div>
       <div style="height:2px;background:#f39c12;border-radius:1px;"></div>
     </div>
@@ -942,6 +942,7 @@
     infrastructura_agrement: {
       type: 'wfs',
       layer: `${WORKSPACE}:infrastructura_agrement`,
+      cql_filter: "categ <> 'partie'",
       style: (feature) => {
         const categ = feature.properties.categ || '';
         if (categ === 'telecabina/telegondola') return { color: '#e74c3c', weight: 3 };
@@ -955,7 +956,8 @@
         const label = categ === 'telecabina/telegondola'
           ? (currentLang === 'ro' ? 'Telecabină / Telegondolă' : 'Cable Car / Gondola')
           : categ === 'telescaun/teleschi'
-          ? (currentLang === 'ro' ? 'Teleschi / Telescaun' : 'Ski Lift / Chairlift');
+          ? (currentLang === 'ro' ? 'Teleschi / Telescaun' : 'Ski Lift / Chairlift')
+          : '';
         return `
           <div class="popup-title">${name}</div>
           <div class="popup-tag">${label}</div>
