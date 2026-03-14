@@ -1100,6 +1100,15 @@
           style: config.style || {},
           onEachFeature: (feature, layer) => {
             if (config.popup) layer.bindPopup(config.popup(feature.properties || {}));
+            if (config.label) {
+              const labelText = config.label(feature.properties || {});
+              if (labelText) layer.bindTooltip(labelText, {
+                permanent: true,
+                direction: 'top',
+                offset: [0, -16],
+                className: 'map-label'
+              });
+          }
           }
         });
       })
