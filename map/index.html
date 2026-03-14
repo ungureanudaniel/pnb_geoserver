@@ -523,7 +523,7 @@
   <div class="layer-group" id="grp-limits">Limite și zonare</div>
   <div class="layer-item active" data-layer="park_boundary" onclick="toggleLayer(this)">
     <div class="layer-toggle"></div>
-    <div class="layer-dash" style="background:#e8734a;"></div>
+    <div class="layer-dash" style="border-color:#e8734a;"></div>
     <span class="layer-label" data-ro="Limita parcului" data-en="Park Boundary">Limita parcului</span>
   </div>
   <div class="layer-item active" data-layer="zoning" onclick="toggleLayer(this)">
@@ -533,7 +533,7 @@
   </div>
   <div class="layer-item active" data-layer="ROSCI0013" onclick="toggleLayer(this)">
     <div class="layer-toggle"></div>
-    <div class="layer-dash" style="background:#9b59b6; opacity:0.8;"></div>
+    <div class="layer-dash" style="border-color:#9b59b6;"></div>
     <span class="layer-label" data-ro="Sit Natura 2000" data-en="Natura 2000 Site">Sit Natura 2000</span>
   </div>
   <div class="layer-group" id="grp-reserves">Rezervații naturale</div>
@@ -620,23 +620,23 @@
   </div>
   <div class="legend-item">
     <div class="legend-dash" style="border-color:#9b59b6;"></div>
-    <span class="legend-label" data-ro="Sit Natura 2000" data-en="Natura 2000 Site">Sit Natura 2000</span>
+    <span class="legend-label" data-ro="Sit Natura 2000" data-en="Natura 2000 Site">Sit Natura 2000 Bucegi</span>
   </div>
   <div class="legend-item">
     <div class="legend-box" style="background:#ff8686; opacity:0.7;"></div>
-    <span class="legend-label" data-ro="ZPI — Protecție Integrală" data-en="ZPI — Strict Protection">ZPI — Protecție Integrală</span>
+    <span class="legend-label" data-ro="ZPI — Zonă de Protecție Integrală" data-en="ZPI — Strict Protection Zone">ZPI — Zonă de Protecție Integrală</span>
   </div>
   <div class="legend-item">
     <div class="legend-box" style="background:#bb0000; opacity:0.7;"></div>
-    <span class="legend-label" data-ro="ZPS — Protecție Strictă" data-en="ZPS — Strict Protection">ZPS — Protecție Strictă</span>
+    <span class="legend-label" data-ro="ZPS — Zonă de Protecție Strictă" data-en="ZPS — Strict Protection Zone">ZPS — Zonă de Protecție Strictă</span>
   </div>
   <div class="legend-item">
     <div class="legend-box" style="background:#50ca50; opacity:0.7;"></div>
-    <span class="legend-label" data-ro="ZMD — Management Durabil" data-en="ZMD — Sustainable Mgmt">ZMD — Management Durabil</span>
+    <span class="legend-label" data-ro="ZMD — Zonă de Management Durabil" data-en="ZMD — Sustainable Management Zone">ZMD — Zonă de Management Durabil</span>
   </div>
   <div class="legend-item">
     <div class="legend-box" style="background:#ffff5f; opacity:0.7;"></div>
-    <span class="legend-label" data-ro="ZDD — Dezvoltare Durabilă" data-en="ZDD — Sustainable Dev">ZDD — Dezvoltare Durabilă</span>
+    <span class="legend-label" data-ro="ZDD — Zonă de Dezvoltare Durabilă" data-en="ZDD — Sustainable Development Zone">ZDD — Zonă de Dezvoltare Durabilă</span>
   </div>
   <div class="legend-item">
     <div class="legend-dash" style="background:#000000; opacity:0.7;"></div>
@@ -707,6 +707,7 @@
       loading:     'Se încarcă harta Parcului Natural Bucegi …',
       headerSub:   'Hartă Interactivă',
       status:      'Parc Deschis · Date live',
+      header:      'Parcul Natural Bucegi',
       dbTitle:     'Prezentare Parc',
       dbSubtitle:  'Condiții actuale',
       kpiArea:     'Suprafață',
@@ -719,6 +720,9 @@
       layersTitle: 'Straturi hartă',
       legendTitle: 'Legendă',
       grpLimits:   'Limite și zonare',
+      boundary:    'Limita parcului',
+      zoning:      'Zonare parc',
+      n2site:      'Sit Natura 2000 Bucegi',
       grpVeg:      'Vegetație',
       grpTrails:   'Trasee',
       grpPoi:      'Puncte de interes',
@@ -741,14 +745,15 @@
       ski:         'Stațiune schi',
       admin:       'Administrație',
       infocenter:  'Infocentru',
-      zpi: 'ZPI — Protecție Integrală',
-      zps: 'ZPS — Protecție Specială',
-      zmd: 'ZMD — Management Durabil',
-      zdd: 'ZDD — Dezvoltare Durabilă',
+      zpi: 'ZPI — Zonă de Protecție Integrală',
+      zps: 'ZPS — Zonă de Protecție Strictă',
+      zmd: 'ZMD — Zonă de Management Durabil',
+      zdd: 'ZDD — Zonă de Dezvoltare Durabilă',
     },
     en: {
       loading:     'Loading Bucegi Natural Park map…',
       headerSub:   'Interactive Explorer',
+      header:      'Bucegi Natural Park',
       status:      'Park Open · Live data',
       dbTitle:     'Park Overview',
       dbSubtitle:  'Live conditions',
@@ -762,6 +767,9 @@
       layersTitle: 'Map Layers',
       legendTitle: 'Legend',
       grpLimits:   'Limits & Zoning',
+      boundary:    'Park Boundary',
+      zoning:      'Park Zoning',
+      n2site:      'Natura 2000 Site',
       grpVeg:      'Vegetation',
       grpTrails:   'Trails',
       grpPoi:      'Points of Interest',
@@ -784,10 +792,10 @@
       ski:         'Ski Resort',
       admin:       'Administration',
       infocenter:  'Info Center',
-      zpi: 'ZPI — Strict Protection',
-      zps: 'ZPS — Special Protection',
-      zmd: 'ZMD — Sustainable Mgmt',
-      zdd: 'ZDD — Sustainable Dev',
+      zpi: 'ZPI — Integral Protection Zone',
+      zps: 'ZPS — Strict Protection Zone',
+      zmd: 'ZMD — Sustainable Management Zone',
+      zdd: 'ZDD — Sustainable Development Zone',
     }
   };
 
