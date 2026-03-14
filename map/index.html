@@ -957,6 +957,7 @@
     admin: {
       type: 'wfs',
       layer: `${WORKSPACE}:admin`,
+      label: (props) => props.Nume || null,
       popup: (props) => {
         const t = T[currentLang];
         const typeLabel = props.tip_constr === 'Centru de Informare Parc' ? t.infocenter : t.admin;
@@ -1108,7 +1109,7 @@
                 offset: [0, -16],
                 className: 'map-label'
               });
-          }
+            }
           }
         });
       })
