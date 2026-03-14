@@ -593,22 +593,14 @@
     <span class="layer-label" data-ro="Administrație / Centre de informare" data-en="Admin / Info Centers">Administrație / Centre de informare</span>
   </div>
 
-  <div class="layer-group" id="grp-agrement">Infrastructură agrement</div>
-  <div class="layer-item" data-layer="ski_slopes" onclick="toggleLayer(this)">
-    <div class="layer-toggle"></div>
-    <div class="layer-swatch" style="background:#5dade2;"></div>
-    <span class="layer-label" data-ro="Pârtii schi" data-en="Ski Slopes">Pârtii schi</span>
+  <div class="layer-item" data-layer="infrastructura_agrement" onclick="toggleLayer(this)">
+  <div class="layer-toggle"></div>
+  <div style="display:flex;flex-direction:column;gap:2px;width:20px;">
+    <div style="height:2px;background:#5dade2;border-radius:1px;"></div>
+    <div style="height:2px;background:#e74c3c;border-radius:1px;"></div>
+    <div style="height:2px;background:#f39c12;border-radius:1px;"></div>
   </div>
-  <div class="layer-item" data-layer="telecabine" onclick="toggleLayer(this)">
-    <div class="layer-toggle"></div>
-    <div class="layer-swatch" style="background:#e74c3c; height:2px; margin:1px 0;"></div>
-    <span class="layer-label" data-ro="Telecabine / Telegondole" data-en="Cable Cars / Gondolas">Telecabine / Telegondole</span>
-  </div>
-  <div class="layer-item" data-layer="teleschi" onclick="toggleLayer(this)">
-    <div class="layer-toggle"></div>
-    <div class="layer-swatch" style="background:#f39c12; height:2px; margin:1px 0;"></div>
-    <span class="layer-label" data-ro="Teleschi / Telescaune" data-en="Ski Lifts / Chairlifts">Teleschi / Telescaune</span>
-  </div>
+  <span class="layer-label" data-ro="Infrastructură agrement" data-en="Recreation Infrastructure">Infrastructură agrement</span>
 </div>
 
 <!-- Legend -->
@@ -946,21 +938,31 @@
       icon: `<div style="width:28px;height:28px;border-radius:5px;background:rgba(196,130,90,0.25);border:2px solid #c4825a;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">🏠</div>`
     },
 
-    ski: {
+    infrastructura_agrement: {
       type: 'wfs',
-      layer: `${WORKSPACE}:ski_resorts`,
-      popup: (props) => {
-        const t = T[currentLang];
-        return `
-          <div class="popup-title">${props.name || props.nume || 'Stațiune schi'}</div>
-          <div class="popup-tag">${t.ski}</div>
-          ${props.altitude_min ? `<div class="popup-row"><span>${t.altMin}</span><strong>${props.altitude_min} m</strong></div>` : ''}
-          ${props.altitude_max ? `<div class="popup-row"><span>${t.altMax}</span><strong>${props.altitude_max} m</strong></div>` : ''}
-          ${props.slopes       ? `<div class="popup-row"><span>${t.slopes}</span><strong>${props.slopes}</strong></div>` : ''}
-        `;
+      layer: `${WORKSPACE}:infrastructura_agrement`,
+      style: (feature) => {
+        const categ = feature.properties.categ || '';
+        if (categ === 'telecabina/telegondola') return { color: '#e74c3c', weight: 3 };
+        if (categ === 'telescaun/teleschi')     return { color: '#f39c12', weight: 2 };
+        if (categ === 'partie')                 return { color: '#5dade2', weight: 2, fillColor: '#5dade2', fillOpacity: 0.4 };
+        return { color: '#ffffff', weight: 1 };
       },
-      icon: `<div style="width:28px;height:28px;border-radius:5px;background:rgba(74,143,168,0.25);border:2px solid #4a8fa8;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">⛷</div>`
+      popup: (props) => {
+        const name = props.Name || props.name || props.categ || '';
+        const categ = props.categ || '';
+        const label = categ === 'telecabina/telegondola'
+          ? (currentLang === 'ro' ? 'Telecabină / Telegondolă' : 'Cable Car / Gondola')
+          : categ === 'telescaun/teleschi'
+          ? (currentLang === 'ro' ? 'Teleschi / Telescaun' : 'Ski Lift / Chairlift')
+          : (currentLang === 'ro' ? 'Pârtie schi' : 'Ski Slope');
+        return `
+          <div class="popup-title">${name}</div>
+          <div class="popup-tag">${label}</div>
+        `;
+      }
     },
+
 
     admin: {
       type: 'wfs',
@@ -986,51 +988,6 @@
     },
 
     // ── Infrastructură agrement ──────────────────────────────────────────
-    // Pârtii — polygon layer, one per slope
-    ski_slopes: {
-      type: 'wfs',
-      layer: `${WORKSPACE}:ski_slopes`,
-      popup: (props) => {
-        const t = T[currentLang];
-        const name = props.Name || props.name || props.nume || (currentLang === 'ro' ? 'Pârtie schi' : 'Ski Slope');
-        return `
-          <div class="popup-title">${name}</div>
-          <div class="popup-tag">${currentLang === 'ro' ? 'Pârtie schi' : 'Ski Slope'}</div>
-          ${props.lungime || props.length ? `<div class="popup-row"><span>${t.length || (currentLang==='ro'?'Lungime':'Length')}</span><strong>${props.lungime || props.length} m</strong></div>` : ''}
-          ${props.dificultate || props.difficulty ? `<div class="popup-row"><span>${t.difficulty || (currentLang==='ro'?'Dificultate':'Difficulty')}</span><strong>${props.dificultate || props.difficulty}</strong></div>` : ''}
-        `;
-      },
-    },
-
-    // Telecabine & Telegondole — line layers
-    telecabine: {
-      type: 'wfs',
-      layer: `${WORKSPACE}:telecabine`,
-      popup: (props) => {
-        const name = props.Name || props.name || props.nume || (currentLang === 'ro' ? 'Telecabină' : 'Cable Car');
-        const count = props.None !== undefined ? props.None : '';
-        return `
-          <div class="popup-title">${name}</div>
-          <div class="popup-tag">${currentLang === 'ro' ? 'Telecabină / Telegondolă' : 'Cable Car / Gondola'}</div>
-          ${count ? `<div class="popup-row"><span>${currentLang === 'ro' ? 'Cabine' : 'Cabins'}</span><strong>${count}</strong></div>` : ''}
-        `;
-      },
-    },
-
-    // Teleschi & Telescaune — line layers
-    teleschi: {
-      type: 'wfs',
-      layer: `${WORKSPACE}:teleschi`,
-      popup: (props) => {
-        const name = props.Name || props.name || props.nume || (currentLang === 'ro' ? 'Teleschi' : 'Ski Lift');
-        const count = props.None !== undefined ? props.None : '';
-        return `
-          <div class="popup-title">${name}</div>
-          <div class="popup-tag">${currentLang === 'ro' ? 'Teleschi / Telescaun' : 'Ski Lift / Chairlift'}</div>
-          ${count ? `<div class="popup-row"><span>${currentLang === 'ro' ? 'Locuri' : 'Seats'}</span><strong>${count}</strong></div>` : ''}
-        `;
-      },
-    }
   };
 
   // ════════════════════════════════════════════════════════════════════════
