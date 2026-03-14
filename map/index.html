@@ -1087,7 +1087,7 @@
   function loadWFS(key, config) {
     setLayerLoading(key, true);
     const cql = config.cql_filter ? `&CQL_FILTER=${encodeURIComponent(config.cql_filter)}` : '';
-    return fetch(`${wfsBase}&typeName=${config.layer}${cql}`)
+    return fetch(`${wfsBase}&typeName=${config.layer}${cql}&srsName=EPSG:4326`)
       .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
       .then(data => {
         setLayerLoading(key, false);
