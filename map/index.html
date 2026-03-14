@@ -671,10 +671,10 @@
     <div class="legend-dot" style="background:#a8c5a0;"></div>
     <span class="legend-label" data-ro="Administrație" data-en="Administration">Administrație</span>
   </div> -->
-  <div class="legend-item">
+  <!-- <div class="legend-item">
     <div class="legend-box" style="background:#5dade2; opacity:0.7;"></div>
     <span class="legend-label" data-ro="Pârtie schi" data-en="Ski Slope">Pârtie schi</span>
-  </div>
+  </div> -->
   <div class="legend-item">
     <div class="legend-line" style="background:#e74c3c;"></div>
     <span class="legend-label" data-ro="Telecabină / Telegondolă" data-en="Cable Car / Gondola">Telecabină / Telegondolă</span>
@@ -955,8 +955,7 @@
         const label = categ === 'telecabina/telegondola'
           ? (currentLang === 'ro' ? 'Telecabină / Telegondolă' : 'Cable Car / Gondola')
           : categ === 'telescaun/teleschi'
-          ? (currentLang === 'ro' ? 'Teleschi / Telescaun' : 'Ski Lift / Chairlift')
-          : (currentLang === 'ro' ? 'Pârtie schi' : 'Ski Slope');
+          ? (currentLang === 'ro' ? 'Teleschi / Telescaun' : 'Ski Lift / Chairlift');
         return `
           <div class="popup-title">${name}</div>
           <div class="popup-tag">${label}</div>
