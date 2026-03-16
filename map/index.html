@@ -735,6 +735,7 @@
       peak:        'Vârf montan',
       shelter:     'Refugiu montan',
       cabin:       'Cabană',
+      grpReserves: 'Rezervații naturale',
       ski:         'Stațiune schi',
       telegondola:  'Linie telecabină / telegondolă',
       telescaun:    'Linie teleschi / telescaun',
@@ -788,6 +789,7 @@
       cabin:       'Cabin',
       ski:         'Ski Resort',
       admin:       'Administration',
+      grpReserves: 'Nature Reserves',
       infocenter:  'Info Center',
       zpi: 'ZPI — Integral Protection Zone',
       zps: 'ZPS — Strict Protection Zone',
@@ -803,37 +805,37 @@
     const t = T[lang];
     document.documentElement.lang = lang;
 
-    document.getElementById('header-sub').textContent    = t.headerSub;
-    document.getElementById('status-text').textContent   = t.status;
-    document.getElementById('db-title').textContent      = t.dbTitle;
-    document.getElementById('db-subtitle').textContent   = t.dbSubtitle;
-    document.getElementById('kpi-area').textContent      = t.kpiArea;
-    document.getElementById('kpi-forest').textContent    = t.kpiForest;
-    document.getElementById('kpi-species').textContent   = t.kpiSpecies;
-    document.getElementById('kpi-trails').textContent    = t.kpiTrails;
-    document.getElementById('kpi-peak').textContent      = t.kpiPeak;
-    document.getElementById('kpi-bears').textContent     = t.kpiBears;
-    document.getElementById('db-info').textContent       = t.dbInfo;
-    document.getElementById('layers-title').textContent  = t.layersTitle;
-    document.getElementById('legend-header').textContent = t.legendTitle;
-    document.getElementById('grp-limits').textContent    = t.grpLimits;
-    document.getElementById('grp-veg').textContent       = t.grpVeg;
-    document.getElementById('grp-trails').textContent    = t.grpTrails;
-    document.getElementById('grp-poi').textContent       = t.grpPoi;
-    document.getElementById('grp-agrement').textContent  = t.grpAgrement;
-    document.getElementById('coords-bar').textContent    = t.coords;
+    const setText = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
 
-    // All data-ro / data-en elements
+    setText('header-sub',    t.headerSub);
+    setText('status-text',   t.status);
+    setText('db-title',      t.dbTitle);
+    setText('db-subtitle',   t.dbSubtitle);
+    setText('kpi-area',      t.kpiArea);
+    setText('kpi-forest',    t.kpiForest);
+    setText('kpi-species',   t.kpiSpecies);
+    setText('kpi-trails',    t.kpiTrails);
+    setText('kpi-peak',      t.kpiPeak);
+    setText('kpi-bears',     t.kpiBears);
+    setText('db-info',       t.dbInfo);
+    setText('layers-title',  t.layersTitle);
+    setText('legend-header', t.legendTitle);
+    setText('grp-limits',    t.grpLimits);
+    setText('grp-reserves',  t.grpReserves);
+    setText('grp-veg',       t.grpVeg);
+    setText('grp-trails',    t.grpTrails);
+    setText('grp-poi',       t.grpPoi);
+    setText('grp-agrement',  t.grpAgrement);
+    setText('coords-bar',    t.coords);
+
     document.querySelectorAll(`[data-${lang}]`).forEach(el => {
       el.textContent = el.getAttribute(`data-${lang}`);
     });
 
-    // Lang buttons
     document.querySelectorAll('.lang-btn').forEach(btn => {
       btn.classList.toggle('active', btn.textContent === lang.toUpperCase());
     });
 
-    // Mobile nav labels
     const mobInfo = document.getElementById('mob-btn-info');
     const mobLayers = document.getElementById('mob-btn-layers');
     const mobLegend = document.getElementById('mob-btn-legend');
@@ -841,11 +843,11 @@
     if (mobLayers) mobLayers.textContent = t.mobLayers;
     if (mobLegend) mobLegend.textContent = t.mobLegend;
 
-    // Mobile lang button
     const mob = document.getElementById('mob-lang-label');
     if (mob) mob.textContent = lang === 'ro' ? 'EN' : 'RO';
     if (typeof currentDrawer !== 'undefined' && currentDrawer) openDrawer(currentDrawer);
   }
+
 
   // ════════════════════════════════════════════════════════════════════════
   // CONFIG
