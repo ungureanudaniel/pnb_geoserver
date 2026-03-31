@@ -476,32 +476,32 @@
     <div class="kpi-cell">
       <div class="kpi-value">32,520<span> ha</span></div>
       <div class="kpi-label" id="kpi-area">Suprafață</div>
-      <div class="kpi-trend">▲ Zonă protejată</div>
+      <div class="kpi-trend" id="kpi-trend-1">▲ Zonă protejată</div>
     </div>
     <div class="kpi-cell">
       <div class="kpi-value">21,369<span> ha</span></div>
       <div class="kpi-label" id="kpi-forest">Fond forestier</div>
-      <div class="kpi-trend">▲ ~30% cu statut de protecție</div>
+      <div class="kpi-trend" id="kpi-trend-2">▲ ~30% cu statut de protecție</div>
     </div>
     <div class="kpi-cell">
       <div class="kpi-value">1,200+</div>
       <div class="kpi-label" id="kpi-species">Specii floră</div>
-      <div class="kpi-trend">▲ 100 endemice</div>
+      <div class="kpi-trend" id="kpi-trend-3">▲ 100 endemice</div>
     </div>
     <div class="kpi-cell">
       <div class="kpi-value">316<span> km</span></div>
       <div class="kpi-label" id="kpi-trails">Trasee marcate</div>
-      <div class="kpi-trend">● Accesibile</div>
+      <div class="kpi-trend" id="kpi-trend-4">● Accesibile</div>
     </div>
     <div class="kpi-cell">
       <div class="kpi-value">~100</div>
       <div class="kpi-label" id="kpi-bears">Ursus arctos</div>
-      <div class="kpi-trend" style="color:#e8a84a;">⚠ Populație în creștere</div>
+      <div class="kpi-trend" id="kpi-trend-5" style="color:#e8a84a;">⚠ Populație în creștere</div>
     </div>
     <div class="kpi-cell">
       <div class="kpi-value">2,505<span> m</span></div>
       <div class="kpi-label" id="kpi-peak">Altitudine maximă</div>
-      <div class="kpi-trend">▲ Vf. Omu</div>
+      <div class="kpi-trend" id="kpi-trend-6">▲ Vf. Omu</div>
     </div>
   </div>
   <div id="dashboard-info">
@@ -709,7 +709,11 @@
       kpiTrails:   'Trasee marcate',
       kpiPeak:     'altitudine',
       kpiBears:    'Urși bruni',
-      kpiPopulation: 'Populație în creștere',
+      kpiTrend1: '▲ Zonă protejată',
+      kpiTrend2: '▲ ~30% cu statut de protecție',
+      kpiTrend3: '▲ 100 endemice',
+      kpiTrend4: '● Accesibile',
+      kpiTrend5: 'Populație în creștere',
       dbInfo:      'Activați straturile pentru a explora traseele, zonarea și infrastructura parcului.',
       layersTitle: 'Straturi hartă',
       legendTitle: 'Legendă',
@@ -760,7 +764,11 @@
       kpiTrails:   'Marked Trails',
       kpiPeak:     'Highest Peak',
       kpiBears:    'Brown Bears',
-      kpiPopulation: 'Growing Population',
+      kpiTrend1: '▲ Protected Area',
+      kpiTrend2: '▲ ~30% with protection status',
+      kpiTrend3: '▲ 100 endemic',
+      kpiTrend4: '● Accessible',
+      kpiTrend5: 'Growing Population',
       dbInfo:      'Toggle layers to explore trails, zoning and park infrastructure.',
       layersTitle: 'Map Layers',
       legendTitle: 'Legend',
@@ -821,6 +829,11 @@
     setText('kpi-peak',      t.kpiPeak);
     setText('kpi-bears',     t.kpiBears);
     setText('kpi-population', t.kpiPopulation);
+    setText('kpi-trend-1',   t.kpiTrend1);
+    setText('kpi-trend-2',   t.kpiTrend2);
+    setText('kpi-trend-3',   t.kpiTrend3);
+    setText('kpi-trend-4',   t.kpiTrend4);
+    setText('kpi-trend-5',   t.kpiTrend5);
     setText('db-info',       t.dbInfo);
     setText('layers-title',  t.layersTitle);
     setText('legend-header', t.legendTitle);
