@@ -526,7 +526,7 @@
     <div class="layer-dash" style="border-color:#e8734a;"></div>
     <span class="layer-label" data-ro="Limita parcului" data-en="Park Boundary">Limita parcului</span>
   </div>
-  <div class="layer-item" data-layer="zoning" onclick="toggleLayer(this)">
+  <div class="layer-item" data-layer="zoning_new" onclick="toggleLayer(this)">
     <div class="layer-toggle"></div>
     <div class="layer-swatch" style="background:#7b9e6b; opacity:0.8;"></div>
     <span class="layer-label" data-ro="Zonare parc" data-en="Park Zoning">Zonare parc</span>
@@ -890,7 +890,7 @@
 
     zoning: {
       type: 'wms',
-      layer: `${WORKSPACE}:zoning`,
+      layer: `${WORKSPACE}:zoning_new`,
       style: (feature) => {
       const zoneType = feature.properties.ZONARE_INT || '';
       const colors = {
