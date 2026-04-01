@@ -892,27 +892,24 @@
       type: 'wms',
       layer: `${WORKSPACE}:zoning`,
       style: (feature) => {
-      // Determine zone type from your attribute field
-      const zoneType = feature.properties.categorie || feature.properties.zone_type || '';
-      
-      // Match colors to your legend
+      const zoneType = feature.properties.ZONARE_INT || '';
       const colors = {
         'ZPI': '#ff8686',
-        'ZPS': '#bb0000',
+        'ZPS': '#cc0000',
         'ZMD': '#50ca50',
-        'ZDD': '#ffff5f',
+        'ZDD': '#ffff00',
       };
-      
       return {
         fillColor: colors[zoneType] || '#6b9e78',
-        weight: 1,
+        weight: 0.8,
         color: '#ffffff',
-        fillOpacity: 0.7
+        fillOpacity: 0.65,
+        opacity: 1
       };
     },
     popup: (props) => {
       const t = T[currentLang];
-      const zoneType = props.categorie || props.zone_type || '';
+      const zoneType = props.ZONARE_INT || '';
       
       const zoneNames = {
         'ZPI': t.zpi || 'ZPI — Integral Protection Zone',
@@ -921,12 +918,13 @@
         'ZDD': t.zdd || 'ZDD — Sustainable Development Zone',
       };
       
-      const area = props.area_ha || props.suprafata || props.area;
+      const zoneTitle = props.DENUMIRE || props.denumire || props.name || 'Zonă protejată';
+      const area = props.AREA_HA || props.area_ha || props.suprafata || '';
       
       return `
-        <div class="popup-title">${props.denumire || props.name || 'Zonă protejată'}</div>
+        <div class="popup-title">${zoneTitle}</div>
         <div class="popup-tag">${zoneNames[zoneType] || zoneType || 'Zonă funcțională'}</div>
-        ${area ? `<div class="popup-row"><span>${t.kpiArea || 'Suprafață'}</span><strong>${area} ha</strong></div>` : ''}
+        ${area ? `<div class="popup-row"><span>${t.kpiArea || 'Suprafață'}</span><strong>${Math.round(area)} ha</strong></div>` : ''}
       `;
     }
     },
