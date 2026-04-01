@@ -891,6 +891,44 @@
     zoning: {
       type: 'wms',
       layer: `${WORKSPACE}:zoning`,
+      style: (feature) => {
+      // Determine zone type from your attribute field
+      const zoneType = feature.properties.categorie || feature.properties.zone_type || '';
+      
+      // Match colors to your legend
+      const colors = {
+        'ZPI': '#ff8686',
+        'ZPS': '#bb0000',
+        'ZMD': '#50ca50',
+        'ZDD': '#ffff5f',
+      };
+      
+      return {
+        fillColor: colors[zoneType] || '#6b9e78',
+        weight: 1,
+        color: '#ffffff',
+        fillOpacity: 0.7
+      };
+    },
+    popup: (props) => {
+      const t = T[currentLang];
+      const zoneType = props.categorie || props.zone_type || '';
+      
+      const zoneNames = {
+        'ZPI': t.zpi || 'ZPI — Integral Protection Zone',
+        'ZPS': t.zps || 'ZPS — Strict Protection Zone',
+        'ZMD': t.zmd || 'ZMD — Sustainable Management Zone',
+        'ZDD': t.zdd || 'ZDD — Sustainable Development Zone',
+      };
+      
+      const area = props.area_ha || props.suprafata || props.area;
+      
+      return `
+        <div class="popup-title">${props.denumire || props.name || 'Zonă protejată'}</div>
+        <div class="popup-tag">${zoneNames[zoneType] || zoneType || 'Zonă funcțională'}</div>
+        ${area ? `<div class="popup-row"><span>${t.kpiArea || 'Suprafață'}</span><strong>${area} ha</strong></div>` : ''}
+      `;
+    }
     },
     reservesoug49: {
       type: 'wms',
