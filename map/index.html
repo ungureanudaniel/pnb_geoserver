@@ -694,7 +694,14 @@
   // ════════════════════════════════════════════════════════════════════════
   // TRANSLATIONS
   // ════════════════════════════════════════════════════════════════════════
-
+  // Helper function to get bilingual field value
+  function getLocalizedValue(props, roField, enField, defaultValue = '') {
+    if (currentLang === 'ro') {
+      return props[roField] || props[enField] || defaultValue;
+    } else {
+      return props[enField] || props[roField] || defaultValue;
+    }
+  }
   const T = {
     ro: {
       loading:     'Se încarcă harta Parcului Natural Bucegi …',
@@ -863,6 +870,20 @@
     const mob = document.getElementById('mob-lang-label');
     if (mob) mob.textContent = lang === 'ro' ? 'EN' : 'RO';
     if (typeof currentDrawer !== 'undefined' && currentDrawer) openDrawer(currentDrawer);
+    // Reload WFS layers to update labels and popups
+    Object.keys(activeLayers).forEach(key => {
+      const config = LAYER_CONFIG[key];
+      if (config && config.type === 'wfs') {
+        // Store the active state
+        const wasActive = true;
+        // Reload the layer
+        removeLayer(key);
+        addLayer(key);
+        // Ensure the toggle button stays active
+        const toggle = document.querySelector(`[data-layer="${key}"]`);
+        if (toggle) toggle.classList.add('active');
+      }
+    });
   }
 
 
@@ -1024,13 +1045,10 @@
       layer: `${WORKSPACE}:admin`,
       label: (props) => props.Nume || null,
       popup: (props) => {
-        const t = T[currentLang];
-        const typeLabel = props.tip_constr === 'Centru de Informare Parc' ? t.infocenter : t.admin;
-        return `
-          <div class="popup-title">${props.Nume || props.name || props.nume || typeLabel}</div>
-          <div class="popup-tag">${typeLabel}</div>
-          ${props.address || props.adresa  ? `<div class="popup-row"><span>${t.address}</span><strong>${props.address || props.adresa}</strong></div>` : ''}
-          ${props.phone   || props.telefon ? `<div class="popup-row"><span>${t.phone}</span><strong>${props.phone || props.telefon}</strong></div>` : ''}
+        const name = getLocalizedValue(props, 'Nume', 'Name', 'Unnamed');
+        return `<div class="popup-title">${name}</div>
+          ${props.address || props.adresa  ? `<div class="popup-row"><span>${T[currentLang].address}</span><strong>${props.address || props.adresa}</strong></div>` : ''}
+          ${props.phone   || props.telefon ? `<div class="popup-row"><span>${T[currentLang].phone}</span><strong>${props.phone || props.telefon}</strong></div>` : ''}
         `;
       },
       icon: `<div style="width:32px;height:32px;border-radius:6px;background:rgba(20,35,25,0.85);border:1.5px solid #a8c5a0;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.4);transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
