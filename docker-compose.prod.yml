@@ -15,7 +15,7 @@ services:
     volumes:
       - ./geoserver/data:/opt/geoserver/data_dir
     ports:
-      - "8090:8080"
+      - "8095:8080"
     networks:
       - park-network
     healthcheck:
