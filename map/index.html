@@ -529,6 +529,11 @@
   <div class="layer-item" data-layer="zoning_new" onclick="toggleLayer(this)">
     <div class="layer-toggle"></div>
     <div class="layer-swatch" style="background:#7b9e6b; opacity:0.8;"></div>
+    <span class="layer-label" data-ro="Zonare propusă, în curs de aprobare" data-en="Proposed Zoning, under review">Zonare propusă, în curs de aprobare</span>
+  </div>
+  <div class="layer-item" data-layer="zoning" onclick="toggleLayer(this)">
+    <div class="layer-toggle"></div>
+    <div class="layer-swatch" style="background:#7b9e6b; opacity:0.8;"></div>
     <span class="layer-label" data-ro="Zonare parc" data-en="Park Zoning">Zonare parc</span>
   </div>
   <div class="layer-item active" data-layer="ROSCI0013" onclick="toggleLayer(this)">
@@ -726,7 +731,8 @@
       legendTitle: 'Legendă',
       grpLimits:   'Limite și zonare',
       boundary:    'Limita parcului',
-      zoning_new:      'Zonare parc',
+      zoning_new:      'Zonare parc, în curs de aprobare',
+      zoning:      'Zonare parc, H.G. 187/2011',
       n2site:      'Sit Natura 2000 Bucegi',
       grpVeg:      'Vegetație',
       grpTrails:   'Trasee',
@@ -781,7 +787,8 @@
       legendTitle: 'Legend',
       grpLimits:   'Limits & Zoning',
       boundary:    'Park Boundary',
-      zoning_new:      'Park Zoning',
+      zoning_new:      'Park Zoning, under review',
+      zoning:      'Park Zoning, H.G. 187/2011',
       n2site:      'Natura 2000 Site',
       grpVeg:      'Vegetation',
       grpTrails:   'Trails',
@@ -908,7 +915,39 @@
       type: 'wms',
       layer: `${WORKSPACE}:ROSCI0013`,
     },
-
+    zoning: {
+    type: 'wfs',
+    layer: `${WORKSPACE}:zoning`,
+    style: (feature) => {
+      const zoneType = feature.properties.ZONARE_INT || '';
+      const colors = {
+        'ZPI': '#ff8686',
+        'ZPS': '#cc0000',
+        'ZMD': '#50ca50',
+        'ZDD': '#ffff00',
+      };
+      return {
+        fillColor: colors[zoneType] || '#6b9e78',
+        weight: 1,
+        color: '#ffffff',
+        fillOpacity: 0.65
+      };
+    },
+    popup: (props) => {
+      const t = T[currentLang];
+      const zoneType = props.ZONARE_INT || '';
+      const zoneNames = {
+        'ZPI': t.zpi || 'ZPI — Integral Protection Zone',
+        'ZPS': t.zps || 'ZPS — Strict Protection Zone',
+        'ZMD': t.zmd || 'ZMD — Sustainable Management Zone',
+        'ZDD': t.zdd || 'ZDD — Sustainable Development Zone',
+      };
+      return `
+        <div class="popup-title">Zonă protejată</div>
+        <div class="popup-tag">${zoneNames[zoneType] || zoneType}</div>
+      `;
+    }
+  },
     zoning_new: {
     type: 'wfs',
     layer: `${WORKSPACE}:zoning_new`,
