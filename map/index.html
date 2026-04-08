@@ -916,7 +916,7 @@
       layer: `${WORKSPACE}:ROSCI0013`,
     },
     zoning: {
-      type: 'wfs',
+      type: 'wms',
       layer: `${WORKSPACE}:zoning`,
       style: (feature) => {
         const zoneType = feature.properties.ZONARE_INT || '';
@@ -949,7 +949,7 @@
       }
     },
     zoning_new: {
-      type: 'wfs',
+      type: 'wms',
       layer: `${WORKSPACE}:zoning_new`,
       style: (feature) => {
         const zoneType = feature.properties.zonare_int || '';
